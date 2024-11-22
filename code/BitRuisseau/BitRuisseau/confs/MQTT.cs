@@ -14,6 +14,6 @@ namespace BitRuisseau.confs
         public static string ClientId = Guid.NewGuid().ToString();
         public static string Topic { get; set; }
         public static string Username = "ict";
-        public static string Password = "123";
+        public static string Password = "321";
     }
 }

@@ -29,7 +29,7 @@ namespace BitRuisseau.services
                     .WithTcpServer(confs.MQTT.BrokerIp, confs.MQTT.BrokerPort)
                     .WithCredentials(confs.MQTT.Username, confs.MQTT.Password)
                     .WithClientId(confs.MQTT.ClientId)
-                    .Build(); //port 1883
+                    .Build();
 
                 // This will throw an exception if the server is not available.
                 // The result from this message returns additional data which was sent
