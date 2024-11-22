@@ -1,4 +1,5 @@
 using Microsoft.VisualBasic;
+using BitRuisseau.services;
 
 namespace BitRuisseau
 {
@@ -18,7 +19,7 @@ namespace BitRuisseau
             this.Controls.Add(button);
         }
 
-        private void openSearch()
+        public void openSearch()
         {
             Form formSearch = new Form()
             {
@@ -29,6 +30,7 @@ namespace BitRuisseau
                 Location = new Point(40, 50),
                 Size = new Size(200, 400),
             };
+            MQTT.getList().ForEach(text => list.Items.Add(text));
 
             formSearch.Controls.Add(list);
             formSearch.ShowDialog();
