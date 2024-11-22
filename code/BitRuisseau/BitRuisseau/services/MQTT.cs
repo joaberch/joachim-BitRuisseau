@@ -7,18 +7,28 @@ namespace BitRuisseau.services
 {
     public class MQTT
     {
+        public static MqttFactory mqttFactory = new MqttFactory();
+
         public static MqttClientOptions _client = new MqttClientOptionsBuilder()
             .WithTcpServer(confs.MQTT.BrokerIp, confs.MQTT.BrokerPort)
             .WithCredentials(confs.MQTT.Username, confs.MQTT.Password)
             .WithClientId(confs.MQTT.ClientId)
             .Build();
-        public static async Task Subscribe(string topic)
+        public static async Task Subscribe()
         {
+            using (var mqttClient = mqttFactory.CreateMqttClient())
+            {
+                var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()/*.WithTopicTemplate(sampleTemplate.WithParameter("id", "2"))*/.Build();
+
+                await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
+
+                Debug.WriteLine("MQTT client subscribed to topic.");
+
+                Debug.WriteLine("Press enter to exit.");
+            }
         }
         public static async Task Connect()
         {
-            var mqttFactory = new MqttFactory();
-
             using (var mqttClient = mqttFactory.CreateMqttClient())
             {
                 var response = await mqttClient.ConnectAsync(_client, CancellationToken.None);
@@ -31,7 +41,6 @@ namespace BitRuisseau.services
 
         public static async Task Disconnect()
         {
-            var mqttFactory = new MqttFactory();
             using (var mqttClient = mqttFactory.CreateMqttClient())
             {
                 var mqttClientDisconnectOptions = mqttFactory.CreateClientDisconnectOptionsBuilder().Build();

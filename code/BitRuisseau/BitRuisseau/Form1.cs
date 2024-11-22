@@ -9,6 +9,9 @@ namespace BitRuisseau
         {
             InitializeComponent();
             InitializeSearch();
+
+            //services.MQTT.Connect();
+            //services.MQTT.Subscribe();
         }
         private void InitializeSearch()
         {
@@ -35,6 +38,7 @@ namespace BitRuisseau
             formSearch.Controls.Add(list);
             formSearch.ShowDialog();
         }
+
         public static List<string> getList()
         {
             return new List<string>() { "test1", "test2" };
