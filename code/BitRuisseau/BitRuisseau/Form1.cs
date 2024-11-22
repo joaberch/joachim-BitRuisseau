@@ -30,10 +30,14 @@ namespace BitRuisseau
                 Location = new Point(40, 50),
                 Size = new Size(200, 400),
             };
-            MQTT.getList().ForEach(text => list.Items.Add(text));
+            getList().ForEach(text => list.Items.Add(text));
 
             formSearch.Controls.Add(list);
             formSearch.ShowDialog();
+        }
+        public static List<string> getList()
+        {
+            return new List<string>() { "test1", "test2" };
         }
     }
 }
