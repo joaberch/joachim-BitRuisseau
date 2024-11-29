@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 namespace BitRuisseau
 {
+    //TODO : The user can select his own network (let him type)
     public partial class NetworkSelect : Form
     {
         public NetworkSelect()
@@ -22,6 +23,7 @@ namespace BitRuisseau
         {
             this.Text = "Sélectionner un réseau";
             this.ClientSize = new System.Drawing.Size(400, 200);
+            this.BackColor = Color.LightGray;
 
             GroupBox groupBox = new GroupBox
             {

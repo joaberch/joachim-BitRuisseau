@@ -35,10 +35,21 @@ namespace BitRuisseau
                 Location = new Point(300, 400)
             };
             networkSelectButton.Click += new EventHandler(NetworkSelectButtonClicked);
+            addMusicButton.Click += new EventHandler(AddMusicButtonClicked);
 
             this.Controls.Add(listBox);
             this.Controls.Add(addMusicButton);
             this.Controls.Add(networkSelectButton);
+        }
+        private async void AddMusicButtonClicked(object sender, EventArgs e)
+        {
+            AddMusic form3 = new AddMusic();
+            //form3. += new EventHandler(ListActualize);
+            form3.ShowDialog();
+        }
+        private async void ListActualize()
+        {
+
         }
         private async void NetworkSelectButtonClicked(object sender, EventArgs e)
         {

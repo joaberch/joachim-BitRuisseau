@@ -31,11 +31,17 @@ namespace BitRuisseau.services
         {
             using (var mqttClient = mqttFactory.CreateMqttClient())
             {
-                var response = await mqttClient.ConnectAsync(_client, CancellationToken.None);
+                try
+                {
+                    var response = await mqttClient.ConnectAsync(_client, CancellationToken.None);
 
-                Debug.WriteLine("The MQTT client is connected.");
+                    Debug.WriteLine("The MQTT client is connected.");
 
-                Debug.WriteLine(response);
+                    Debug.WriteLine(response);
+                } catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
         }
 
