@@ -8,7 +8,8 @@ namespace BitRuisseau.confs
 {
     internal class MQTT
     {
-        public static string BrokerIp = "inf-n510-p301";
+        //inf-n510-p301 - mqtt.blue.section-inf.ch
+        public static string BrokerIP { get; set; }
         public static int BrokerPort = 1883;
 
         public static string ClientId = Guid.NewGuid().ToString();

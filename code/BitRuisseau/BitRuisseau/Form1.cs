@@ -9,6 +9,7 @@ namespace BitRuisseau
         {
             InitializeComponent();
             InitializeMenu();
+            confs.MQTT.BrokerIP = "mqtt.blue.section-inf.ch"; //base value
             services.MQTT.Connect();
             //services.MQTT.Subscribe();
         }
@@ -33,13 +34,13 @@ namespace BitRuisseau
                 Size = new Size(150, 30),
                 Location = new Point(300, 400)
             };
-            networkSelectButton.Click += new EventHandler(networkSelectButtonClicked);
+            networkSelectButton.Click += new EventHandler(NetworkSelectButtonClicked);
 
             this.Controls.Add(listBox);
             this.Controls.Add(addMusicButton);
             this.Controls.Add(networkSelectButton);
         }
-        private async void networkSelectButtonClicked(object sender, EventArgs e)
+        private async void NetworkSelectButtonClicked(object sender, EventArgs e)
         {
             NetworkSelect form2 = new NetworkSelect();
             form2.ShowDialog();

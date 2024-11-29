@@ -10,7 +10,7 @@ namespace BitRuisseau.services
         public static MqttFactory mqttFactory = new MqttFactory();
 
         public static MqttClientOptions _client = new MqttClientOptionsBuilder()
-            .WithTcpServer(confs.MQTT.BrokerIp, confs.MQTT.BrokerPort)
+            .WithTcpServer(confs.MQTT.BrokerIP, confs.MQTT.BrokerPort)
             .WithCredentials(confs.MQTT.Username, confs.MQTT.Password)
             .WithClientId(confs.MQTT.ClientId)
             .Build();
