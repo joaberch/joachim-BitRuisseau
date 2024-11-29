@@ -25,14 +25,14 @@ namespace BitRuisseau
             Button addMusicButton = new Button()
             {
                 Text = "Ajouter une musique",
-                Size = new Size(150, 30),
+                AutoSize = true,
                 Location = new Point(125, 400)
             };
             Button networkSelectButton = new Button()
             {
                 Text = "Sélectionner un réseau",
-                Size = new Size(150, 30),
-                Location = new Point(300, 400)
+                AutoSize = true,
+                Location = new Point(350, 400)
             };
             networkSelectButton.Click += new EventHandler(NetworkSelectButtonClicked);
             addMusicButton.Click += new EventHandler(AddMusicButtonClicked);
