@@ -8,20 +8,42 @@ namespace BitRuisseau
         public Form1()
         {
             InitializeComponent();
-            InitializeSearch();
-
-            //services.MQTT.Connect();
+            InitializeMenu();
+            services.MQTT.Connect();
             //services.MQTT.Subscribe();
         }
-        private void InitializeSearch()
-        {
-            Button button = new Button();
-            button.Text = "Rechercher";
-            button.Location = new Point(50, 50);
-            button.Click += (sender, e) => openSearch();
-            this.Controls.Add(button);
-        }
 
+        public void InitializeMenu()
+        {
+            this.Text = "BitRuisseau";
+            ListBox listBox = new ListBox()
+            {
+                Size = new Size(550, 300),
+                Location = new Point(120, 90)
+            };
+            Button addMusicButton = new Button()
+            {
+                Text = "Ajouter une musique",
+                Size = new Size(150, 30),
+                Location = new Point(125, 400)
+            };
+            Button networkSelectButton = new Button()
+            {
+                Text = "Sélectionner un réseau",
+                Size = new Size(150, 30),
+                Location = new Point(300, 400)
+            };
+            networkSelectButton.Click += new EventHandler(networkSelectButtonClicked);
+
+            this.Controls.Add(listBox);
+            this.Controls.Add(addMusicButton);
+            this.Controls.Add(networkSelectButton);
+        }
+        private async void networkSelectButtonClicked(object sender, EventArgs e)
+        {
+            NetworkSelect form2 = new NetworkSelect();
+            form2.ShowDialog();
+        }
         public void openSearch()
         {
             Form formSearch = new Form()
