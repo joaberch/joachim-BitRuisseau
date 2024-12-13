@@ -72,11 +72,6 @@ namespace BitRuisseau.services
             Console.WriteLine("Message sent successfully!");
         }
 
-        private async void button1_Click_1(object sender, EventArgs e)
-        {
-            SendData("HELLO, qui a des musiques");
-        }
-
         private void ReceiveMessage(MqttApplicationMessageReceivedEventArgs message)
         {
             try
