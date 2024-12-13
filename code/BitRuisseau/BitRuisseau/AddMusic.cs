@@ -1,4 +1,5 @@
 ﻿using BitRuisseau.Models;
+using BitRuisseau.services;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -7,6 +8,8 @@ namespace BitRuisseau
 {
     public partial class AddMusic : Form
     {
+        MyMusic MyMusic = new MyMusic();
+
         private TextBox txtMusicName;
         private TextBox txtArtistName;
         private Label lblFilePath;
@@ -100,9 +103,10 @@ namespace BitRuisseau
 
             MusicFile musicFile = new MusicFile(musicName, fileSize, fileExtension, filePath, artistName);
 
-            DisplayMusicAdded(musicFile);
-            this.Close();
+            MyMusic.AddMusic(musicFile);
+            //DisplayMusicAdded(musicFile);
 
+            this.Close();
         }
         private void DisplayMusicAdded(MusicFile musicFile)
         {

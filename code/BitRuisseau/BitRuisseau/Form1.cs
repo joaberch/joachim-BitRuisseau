@@ -1,10 +1,13 @@
 using Microsoft.VisualBasic;
 using BitRuisseau.services;
+using System.IO;
 
 namespace BitRuisseau
 {
     public partial class Form1 : Form
     {
+        MyMusic MyMusic  = new MyMusic();
+
         public Form1()
         {
             InitializeComponent();
@@ -34,6 +37,8 @@ namespace BitRuisseau
                 Size = new Size(150, 30),
                 Location = new Point(300, 400)
             };
+            AddMusic(listBox);
+
             networkSelectButton.Click += new EventHandler(NetworkSelectButtonClicked);
             addMusicButton.Click += new EventHandler(AddMusicButtonClicked);
 
@@ -41,15 +46,21 @@ namespace BitRuisseau
             this.Controls.Add(addMusicButton);
             this.Controls.Add(networkSelectButton);
         }
+        private void AddMusic(ListBox listbox)
+        {
+            using (StreamReader sr = new StreamReader(@"../../../../musicList.csv"))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    listbox.Items.Add(line);
+                }
+            }
+        }
         private async void AddMusicButtonClicked(object sender, EventArgs e)
         {
             AddMusic form3 = new AddMusic();
-            //form3. += new EventHandler(ListActualize);
             form3.ShowDialog();
-        }
-        private async void ListActualize()
-        {
-
         }
         private async void NetworkSelectButtonClicked(object sender, EventArgs e)
         {
