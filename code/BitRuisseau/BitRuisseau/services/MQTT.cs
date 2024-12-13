@@ -14,34 +14,40 @@ namespace BitRuisseau.services
 
         public static async void CreateConnection()
         {
-            var factory = new MqttFactory();
-            mqttClient = factory.CreateMqttClient();
-            // MQTT connection param
-            mqttOptions = new MqttClientOptionsBuilder()
-                .WithTcpServer(confs.MQTT.BrokerIP, confs.MQTT.BrokerPort)
-                .WithCredentials(confs.MQTT.Username, confs.MQTT.Password)
-                .WithClientId(confs.MQTT.ClientId)
-                .WithCleanSession()
-                .Build();
-
-            //Connect to the broker
-            var connectResult = await mqttClient.ConnectAsync(mqttOptions);
-
-            //Check broker connection
-            if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
+            try
             {
-                MessageBox.Show("Connected to MQTT broker successfully.");
+                var factory = new MqttFactory();
+                mqttClient = factory.CreateMqttClient();
+                // MQTT connection param
+                mqttOptions = new MqttClientOptionsBuilder()
+                    .WithTcpServer(confs.MQTT.BrokerIP, confs.MQTT.BrokerPort)
+                    .WithCredentials(confs.MQTT.Username, confs.MQTT.Password)
+                    .WithClientId(confs.MQTT.ClientId)
+                    .WithCleanSession()
+                    .Build();
 
-                // Subscribe
-                var subscribeOptions = new MqttClientSubscribeOptionsBuilder()
-                    .WithTopicFilter(f =>
-                    {
-                        f.WithTopic(confs.MQTT.Topic);
-                        f.WithNoLocal(false); // Ensure the client does not receive its own messages - disabled because requires a certain version : TODO
-                    })
-                        .Build();
-                // Subscribe to a topic
-                await mqttClient.SubscribeAsync(subscribeOptions);
+                //Connect to the broker
+                var connectResult = await mqttClient.ConnectAsync(mqttOptions);
+
+                //Check broker connection
+                if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
+                {
+                    MessageBox.Show("Connected to MQTT broker successfully.");
+
+                    // Subscribe
+                    var subscribeOptions = new MqttClientSubscribeOptionsBuilder()
+                        .WithTopicFilter(f =>
+                        {
+                            f.WithTopic(confs.MQTT.Topic);
+                            f.WithNoLocal(false); // Ensure the client does not receive its own messages - disabled because requires a certain version : TODO
+                        })
+                            .Build();
+                    // Subscribe to a topic
+                    await mqttClient.SubscribeAsync(subscribeOptions);
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show("Error connecting to the broker");
             }
         }
         //public static async void GetAndRespondToCatalogAsking()
