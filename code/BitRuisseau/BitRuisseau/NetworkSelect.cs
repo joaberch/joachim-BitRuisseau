@@ -29,11 +29,12 @@ namespace BitRuisseau
             {
                 Text = "Options",
                 Location = new Point(100, 20),
-                Size = new Size(200, 150)
+                Size = new Size(200, 150),
+                AutoSize = true,
             };
 
             string[] options = { "inf-n510-p301", "mqtt.blue.section-inf.ch", "127.0.0.1" };
-            int yOffset = 20;
+            int yOffset = 30;
 
             foreach (string option in options)
             {
@@ -41,11 +42,11 @@ namespace BitRuisseau
                 {
                     Text = option,
                     Location = new Point(10, yOffset),
-                    AutoSize = true
+                    AutoSize = true,
                 };
                 radioButton.CheckedChanged += new EventHandler((sender, e) => NetworkChanged(sender, e, radioButton.Text));
                 groupBox.Controls.Add(radioButton);
-                yOffset += 20;
+                yOffset += 30;
             }
             
 

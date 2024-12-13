@@ -22,46 +22,66 @@ namespace BitRuisseau
 
         public void InitializeMenu()
         {
-            this.Text = "Ajouter une musique";
-            this.Size = new Size(500, 300);
+			this.Text = "Ajouter une musique";
+            this.Size = new Size(500, 400);
+            this.AutoSize = true;
             this.BackColor = Color.LightGray;
 
-            Label lblMusicName = new Label();
-            lblMusicName.Text = "Nom de la musique:";
-            lblMusicName.Location = new Point(20, 20);
-            lblMusicName.AutoSize = true;
+            Label lblMusicName = new Label()
+            {
+                Text = "Nom de la musique:",
+                Location = new Point(20, 20),
+                AutoSize = true,
+            };
 
-            txtMusicName = new TextBox();
-            txtMusicName.Location = new Point(150, 20);
-            txtMusicName.Width = 300;
+            txtMusicName = new TextBox()
+            {
+                Location = new Point(200, 20),
+                Width = 300
+            };
 
-            Label lblArtistName = new Label();
-            lblArtistName.Text = "Nom de l'artiste:";
-            lblArtistName.Location = new Point(20, 60);
-            lblArtistName.AutoSize = true;
+            Label lblArtistName = new Label()
+            {
+                Text = "Nom de l'artiste:",
+                Location = new Point(20, 60),
+                AutoSize = true,
+            };
 
-            txtArtistName = new TextBox();
-            txtArtistName.Location = new Point(150, 60);
-            txtArtistName.Width = 300;
+            txtArtistName = new TextBox()
+            {
+                Location = new Point(200, 60),
+                Width = 300,
+            };
 
-            Label lblFile = new Label();
-            lblFile.Text = "Fichier de musique:";
-            lblFile.Location = new Point(20, 100);
-            lblFile.AutoSize = true;
+            Label lblFile = new Label()
+            {
+                Text = "Fichier de musique:",
+                Location = new Point(20, 100),
+                AutoSize = true,
+            };
 
-            lblFilePath = new Label();
-            lblFilePath.Location = new Point(150, 100);
-            lblFilePath.Width = 300;
-            lblFilePath.BorderStyle = BorderStyle.FixedSingle;
+            lblFilePath = new Label()
+            {
+                Location = new Point(200, 100),
+                Width = 300,
+                AutoSize = true,
+                BorderStyle = BorderStyle.FixedSingle,
+            };
 
-            Button btnBrowse = new Button();
-            btnBrowse.Text = "Choisir un fichier";
-            btnBrowse.Location = new Point(150, 140);
-            btnBrowse.Click += BtnBrowse_Click;
+            Button btnFile = new Button()
+            {
+                Text = "Choisir un fichier",
+                Location = new Point(150, 140),
+                AutoSize = true,
+            };
+            btnFile.Click += BtnBrowse_Click;
 
-            Button btnAdd = new Button();
-            btnAdd.Text = "Ajouter";
-            btnAdd.Location = new Point(200, 200);
+            Button btnAdd = new Button()
+            {
+                Text = "Ajouter",
+                Location = new Point(200, 200),
+                AutoSize = true,
+            };
             btnAdd.Click += BtnAdd_Click;
 
             this.Controls.Add(lblMusicName);
@@ -70,7 +90,7 @@ namespace BitRuisseau
             this.Controls.Add(txtArtistName);
             this.Controls.Add(lblFile);
             this.Controls.Add(lblFilePath);
-            this.Controls.Add(btnBrowse);
+            this.Controls.Add(btnFile);
             this.Controls.Add(btnAdd);
         }
 
