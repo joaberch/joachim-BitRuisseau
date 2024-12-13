@@ -12,6 +12,9 @@ namespace BitRuisseau.services
         static IMqttClient mqttClient; // Client MQTT global
         static MqttClientOptions mqttOptions; // Global connection options
 
+        /// <summary>
+        /// Connect to the broker specified in the confs
+        /// </summary>
         public static async void CreateConnection()
         {
             try
@@ -50,6 +53,27 @@ namespace BitRuisseau.services
                 MessageBox.Show("Error connecting to the broker");
             }
         }
+
+        static public async void SendData(string data)
+        {
+            // Create the message
+            var message = new MqttApplicationMessageBuilder()
+            .WithTopic(confs.MQTT.Topic)
+            .WithPayload(data)
+            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+            .WithRetainFlag(false)
+            .Build();
+
+            // Send the message
+            mqttClient.PublishAsync(message);
+            Console.WriteLine("Message sent successfully!");
+        }
+
+        private async void button1_Click_1(object sender, EventArgs e)
+        {
+            SendData("HELLO, qui a des musiques");
+        }
+
         //public static async void GetAndRespondToCatalogAsking()
         //{
         //    // Callback function when a message is received
