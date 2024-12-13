@@ -1,9 +1,11 @@
-﻿using MQTTnet;
+﻿using BitRuisseau.Models;
+using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 
 namespace BitRuisseau.services
 {
@@ -11,6 +13,7 @@ namespace BitRuisseau.services
     {
         static IMqttClient mqttClient; // Client MQTT global
         static MqttClientOptions mqttOptions; // Global connection options
+        MyCatalog catalog = new MyCatalog();
 
         /// <summary>
         /// Connect to the broker specified in the confs
@@ -72,6 +75,40 @@ namespace BitRuisseau.services
         private async void button1_Click_1(object sender, EventArgs e)
         {
             SendData("HELLO, qui a des musiques");
+        }
+
+        private void ReceiveMessage(MqttApplicationMessageReceivedEventArgs message)
+        {
+            try
+            {
+                Debug.Write(Encoding.UTF8.GetString(message.ApplicationMessage.Payload));
+                GenericEnvelope envelope = JsonSerializer.Deserialize<GenericEnvelope>(Encoding.UTF8.GetString(message.ApplicationMessage.Payload));
+                if (envelope.SenderId == confs.MQTT.ClientId) return;
+                switch (envelope.MessageType)
+                {
+                    case MessageType.ENVOIE_CATALOGUE:
+                        {
+                            EnvelopeSendCatalog enveloppeEnvoieCatalogue = JsonSerializer.Deserialize<EnvelopeSendCatalog>(envelope.EnvelopeJson);
+                            break;
+                        }
+                    case MessageType.DEMANDE_CATALOGUE:
+                        {
+                            EnvelopeSendCatalog sendCatalog = new EnvelopeSendCatalog();
+                            //sendCatalog.Content = catalog. _maListMediaData;
+                            //SendMessage(mqttClient, MessageType.ENVOIE_CATALOGUE, confs.MQTT.ClientId, sendCatalog, "test");
+                            break;
+                        }
+                    case MessageType.ENVOIE_FICHIER:
+                        {
+                            EnvelopeSendFile enveloppeEnvoieFichier = JsonSerializer.Deserialize<EnvelopeSendFile>(envelope.EnvelopeJson);
+                            break;
+                        }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         //public static async void GetAndRespondToCatalogAsking()

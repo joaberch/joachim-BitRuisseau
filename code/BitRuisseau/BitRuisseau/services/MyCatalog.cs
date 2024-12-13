@@ -1,4 +1,5 @@
-﻿using BitRuisseau.Models;
+﻿using BitRuisseau.confs;
+using BitRuisseau.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,13 @@ using System.Threading.Tasks;
 
 namespace BitRuisseau.services
 {
-    public class MyMusic
+    public class MyCatalog
     {
+        public MyCatalog() 
+        {
+            List<MediaData> catalog = new List<MediaData>();
+        }
+
         List<MusicFile> musicFiles = new List<MusicFile>();
         string path = @"../../../../musicList.csv";
 

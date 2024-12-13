@@ -7,7 +7,7 @@ namespace BitRuisseau
 {
     public partial class Form1 : Form
     {
-        MyMusic MyMusic  = new MyMusic();
+        MyCatalog MyMusic  = new MyCatalog();
 
         public Form1()
         {

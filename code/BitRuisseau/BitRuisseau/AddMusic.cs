@@ -8,7 +8,7 @@ namespace BitRuisseau
 {
     public partial class AddMusic : Form
     {
-        MyMusic MyMusic = new MyMusic();
+        MyCatalog MyMusic = new MyCatalog();
 
         private TextBox txtMusicName;
         private TextBox txtArtistName;
