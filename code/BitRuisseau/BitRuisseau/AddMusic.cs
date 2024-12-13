@@ -124,20 +124,11 @@ namespace BitRuisseau
             MusicFile musicFile = new MusicFile(musicName, fileSize, fileExtension, filePath, artistName);
 
             MyMusic.AddMusic(musicFile);
-            //DisplayMusicAdded(musicFile);
-
+            
+            //TODO - emit event that reload the listbox
             this.Close();
         }
-        private void DisplayMusicAdded(MusicFile musicFile)
-        {
-            MessageBox.Show($"Musique ajoutée :\n" +
-                $"Nom: {musicFile.Name}\n" +
-                $"Artiste: {musicFile.ArtistName}\n" +
-                $"Emplacement du fichier: {musicFile.Path}\n" +
-                $"Taille du fichier: {musicFile.Size}\n" +
-                $"Extension du fichier: {musicFile.Extension}",
-                "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+
         private string GetExtension(string path)
         {
             try
