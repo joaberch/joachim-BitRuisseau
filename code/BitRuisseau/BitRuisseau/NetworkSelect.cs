@@ -56,8 +56,8 @@ namespace BitRuisseau
         {
             if (!sender.ToString().Contains("Checked: True")) { return;}
             confs.MQTT.BrokerIP = text;
-            services.MQTT.Disconnect();
-            services.MQTT.Connect();
+            //services.MQTT.Disconnect();
+            services.MQTT.CreateConnection();
         }
     }
 }
