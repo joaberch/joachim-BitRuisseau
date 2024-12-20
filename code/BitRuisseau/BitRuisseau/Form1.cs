@@ -182,7 +182,7 @@ namespace BitRuisseau
         {
             //services.MQTT.GetAndRespondToCatalogAsking();
             //TODO send a serialized ask catalog
-            services.MQTT.SendData("HELLO");
+            services.MQTT.AskCatalog();
         }
     }
 }

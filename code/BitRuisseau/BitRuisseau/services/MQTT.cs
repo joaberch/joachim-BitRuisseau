@@ -58,6 +58,10 @@ namespace BitRuisseau.services
             }
         }
 
+        /// <summary>
+        /// Send simple message in the broker
+        /// </summary>
+        /// <param name="data"></param>
         static public async void SendData(string data)
         {
             // Create the message
@@ -73,6 +77,9 @@ namespace BitRuisseau.services
             Console.WriteLine("Message sent successfully!");
         }
 
+        /// <summary>
+        /// Receive every message sent
+        /// </summary>
         public static async void GetMessage()
         {
             mqttClient.ApplicationMessageReceivedAsync += async e =>
@@ -93,6 +100,10 @@ namespace BitRuisseau.services
             };
         }
 
+        /// <summary>
+        /// Process message depending of his type
+        /// </summary>
+        /// <param name="deserializedMessage"></param>
         private static void ProcessMessage(GenericEnvelope? deserializedMessage)
         {
             switch (deserializedMessage.MessageType)
@@ -124,21 +135,33 @@ namespace BitRuisseau.services
             }
         }
 
+        /// <summary>
+        /// Send file
+        /// </summary>
         private static void SendFile()
         {
             //EnvelopeSendFile enveloppeEnvoieFichier = JsonSerializer.Deserialize<EnvelopeSendFile>(envelope.EnvelopeJson);
         }
 
+        /// <summary>
+        /// Get File
+        /// </summary>
         private static void DownloadFile()
         {
 
         }
 
+        /// <summary>
+        /// Get Catalog
+        /// </summary>
         private static void GetCatalog()
         {
 
         }
 
+        /// <summary>
+        /// Send catalog
+        /// </summary>
         private static async void SendCatalog()
         {
             EnvelopeSendCatalog sendCatalog = new EnvelopeSendCatalog();
@@ -166,11 +189,36 @@ namespace BitRuisseau.services
             Console.WriteLine("Message sent successfully!");
         }
 
+        /// <summary>
+        /// Ask Catalog on button "Rechercher" clicked
+        /// </summary>
+        public static async void AskCatalog()
+        {
+            EnvelopeAskCatalog askCatalog = new EnvelopeAskCatalog();
+
+            GenericEnvelope genericEnvelope = new GenericEnvelope();
+            genericEnvelope.MessageType = MessageType.ASK_CATALOG;
+            genericEnvelope.SenderId = confs.MQTT.ClientId;
+            genericEnvelope.EnvelopeJson = askCatalog.ToJson();
+
+            SendData(JsonSerializer.Serialize(genericEnvelope));
+        }
+
+        /// <summary>
+        /// Deserialize Generic Envelope
+        /// </summary>
+        /// <param name="serializedMessage"></param>
+        /// <returns></returns>
         private static GenericEnvelope? DeserializeGenericMessage(string serializedMessage)
         {
             return JsonSerializer.Deserialize<GenericEnvelope>(serializedMessage);
         }
 
+        /// <summary>
+        /// Return the list of the music title
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private static string GetMusicList(string path)
         {
             string musicData = File.ReadAllText(path);

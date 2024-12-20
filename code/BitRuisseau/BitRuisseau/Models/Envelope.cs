@@ -25,13 +25,14 @@ namespace BitRuisseau.Models
         /* 
             type 1 SEND_CATALOG
          */
-        private int _type;
-        private string _guid;
         private List<MediaData> _content;
 
-        public string Guid { get => _guid; set => _guid = value; }
         public List<MediaData> Content { get => _content; set => _content = value; }
-        public int Type { get => _type; set => _type = value; }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 
     public class EnvelopeAskCatalog
@@ -39,13 +40,14 @@ namespace BitRuisseau.Models
         /* 
             type 2 ASK_CATALOG
          */
-        private int _type;
-        private string _guid;
         private string _content;
 
-        public string Guid { get => _guid; set => _guid = value; }
         public string Content { get => _content; set => _content = value; }
-        public int Type { get => _type; set => _type = value; }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 
     public class EnvelopeSendFile
@@ -53,46 +55,26 @@ namespace BitRuisseau.Models
         /* 
             type 3 SEND_FILE
          */
-        private int _type;
-        private string _guid;
         private string _content;
 
-        public string Guid { get => _guid; set => _guid = value; }
         public string Content { get => _content; set => _content = value; }
-        public int Type { get => _type; set => _type = value; }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
     public class AskFile
     {
         /*
             type 4 ASK_FILE
         */
-        private int _type;
-        private string _guid;
-        private string _personnal_topic;
         private string _file_name;
-
-        public int Type
-        {
-            get => _type;
-            set => _type = value;
-        }
-
-        public string Guid
-        {
-            get => _guid;
-            set => _guid = value;
-        }
 
         public string FileName
         {
             get => _file_name;
             set => _file_name = value;
-        }
-
-        public string PersonnalTopic
-        {
-            get => _personnal_topic;
-            set => _personnal_topic = value;
         }
 
         public string ToJson()
