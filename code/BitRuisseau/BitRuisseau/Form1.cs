@@ -25,7 +25,7 @@ namespace BitRuisseau
             Button myCatalog = new Button()
             {
                 Text = "Ma médiathèque",
-                BackColor = Color.FromArgb(111, 209, 236),
+                BackColor = Color.FromArgb(217, 217, 217),
                 Bounds = new Rectangle(),
                 AutoSize = true,
                 Location = new Point(100, 30)
@@ -33,7 +33,7 @@ namespace BitRuisseau
             Button SearchMusic = new Button()
             {
                 Text = "Chercher une musique",
-                BackColor = Color.FromArgb(217, 217, 217),
+                BackColor = Color.FromArgb(111, 209, 236),
                 Bounds = new Rectangle(),
                 AutoSize = true,
                 Location = new Point(400, 30)
