@@ -12,7 +12,7 @@ namespace BitRuisseau.confs
         public static string BrokerIP { get; set; }
         public static int BrokerPort = 1883;
 
-        public static string ClientId = Guid.NewGuid().ToString();
+        public static string ClientId = "Joachim-" + Guid.NewGuid().ToString();
         public static string Topic = "test";
         public static string Username = "ict";
         public static string Password = "321";

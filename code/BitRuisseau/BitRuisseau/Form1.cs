@@ -18,6 +18,9 @@ namespace BitRuisseau
             //services.MQTT.Subscribe();
         }
 
+        /// <summary>
+        /// Element of the second menu
+        /// </summary>
         public void InitializeSearchMenu()
         {
             this.Text = "BitRuisseau";
@@ -176,7 +179,8 @@ namespace BitRuisseau
 
         private async void SearchCatalog(object sender, EventArgs e)
         {
-            services.MQTT.SendData("test");
+            services.MQTT.GetAndRespondToCatalogAsking();
+            services.MQTT.SendData("HELLO");
         }
     }
 }
