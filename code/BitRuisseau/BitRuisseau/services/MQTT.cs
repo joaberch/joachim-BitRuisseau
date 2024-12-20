@@ -174,7 +174,15 @@ namespace BitRuisseau.services
             if (musicList.Length==0) { return; }
 
             List<MediaData> list = new List<MediaData>();
-            list = GetMedia();
+            list = services.MyCatalog.GetMedia();
+
+            sendCatalog.Content = list;
+            GenericEnvelope envelope = new GenericEnvelope();
+            envelope.MessageType = MessageType.SEND_CATALOG;
+            envelope.SenderId = confs.MQTT.ClientId;
+            envelope.EnvelopeJson = sendCatalog.ToJson();
+
+            //TODO
 
             string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}"; // TODO send serialized catalog
 
@@ -195,24 +203,6 @@ namespace BitRuisseau.services
             // Envoyez le message
             mqttClient.PublishAsync(message);
             Console.WriteLine("Message sent successfully!");
-        }
-
-        public static List<MediaData> GetMedia()
-        {
-            List<MediaData> medias = new List<MediaData>();
-            string path = @"../../../../musicList.csv";
-            using (StreamReader sr = new StreamReader(path))
-            {
-                string lines;
-                while ((lines = sr.ReadLine()) != null)
-                {
-                    string[] line_data = lines.Split(';');
-                    FileInfo fileInfo = new FileInfo(line_data[0]);
-                    //MediaData data = new MediaData(line_data[0], line_data[1], line_data[4], line_data[2]);
-                }
-            }
-
-            return medias;
         }
 
         /// <summary>
