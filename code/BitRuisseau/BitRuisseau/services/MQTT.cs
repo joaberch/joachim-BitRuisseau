@@ -111,19 +111,19 @@ namespace BitRuisseau.services
             // Callback function when a message is received
             mqttClient.ApplicationMessageReceivedAsync += async e =>
             {
-                MessageBox.Show(e.ClientId.ToString());
                 string receivedMessage = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
                 MessageBox.Show($"Received message: {receivedMessage}");
 
-                // Vérifier que le message contient HELLO
-                if (receivedMessage.Contains("HELLO") == true)
+                // HELLO is the message to ask the catalog - also check if the sender is not myself (noLocal deactivated)
+                if (receivedMessage.Contains("HELLO") == true && e.ClientId.ToString().Contains("Joachim")) //TODO find where the messageType is check if is "DEMANDE_CATALOGUE"
                 {
-                    // Obtenir la liste des musiques à envoyer
-                    //string musicList = GetMusicList();
+                    // Get the list of the music
+                    string path = @"../../../../musicList.csv";
+                    string musicList = GetMusicList(path);
 
-                    // Construisez le message à envoyer (sera changé en JSON)
-                    //string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}";
+                    // Build the message to send (will be changed in JSON)
+                    string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}";
 
                     if (mqttClient == null || !mqttClient.IsConnected)
                     {
@@ -132,20 +132,40 @@ namespace BitRuisseau.services
                     }
 
                     // Créez le message à envoyer
-                    //var message = new MqttApplicationMessageBuilder()
-                    //    .WithTopic(confs.MQTT.Topic)
-                    //    .WithPayload(response)
-                    //    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-                    //    .WithRetainFlag(false)
-                    //    .Build();
+                    var message = new MqttApplicationMessageBuilder()
+                        .WithTopic(confs.MQTT.Topic)
+                        .WithPayload(response)
+                        .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                        .WithRetainFlag(false)
+                        .Build();
 
                     // Envoyez le message
-                    //mqttClient.PublishAsync(message);
+                    mqttClient.PublishAsync(message);
                     Console.WriteLine("Message sent successfully!");
                 }
 
                 return;
             };
+        }
+
+        private static string GetMusicList(string path)
+        {
+            string musicData = File.ReadAllText(path);
+            List<string> musicTitle = new List<string>();
+            string[] data = musicData.Split(';');
+            StringBuilder result = new StringBuilder();
+
+            for (int i = 0; i<= data.Count(); ++i)
+            {
+                if (i == 0 || i % 5 == 0)
+                {
+                    musicTitle.Add(data[i]);
+                }
+            }
+
+            musicTitle.ForEach(m => result.Append(m));
+
+            return result.ToString();
         }
     }
 }
