@@ -73,44 +73,6 @@ namespace BitRuisseau.services
             Console.WriteLine("Message sent successfully!");
         }
 
-        private void ReceiveMessage(MqttApplicationMessageReceivedEventArgs message)
-        {
-            try
-            {
-                Debug.Write(Encoding.UTF8.GetString(message.ApplicationMessage.Payload));
-                GenericEnvelope envelope = JsonSerializer.Deserialize<GenericEnvelope>(Encoding.UTF8.GetString(message.ApplicationMessage.Payload));
-                if (envelope.SenderId == confs.MQTT.ClientId) return;
-                switch (envelope.MessageType)
-                {
-                    case MessageType.SEND_CATALOG:
-                        {
-                            EnvelopeSendCatalog enveloppeEnvoieCatalogue = JsonSerializer.Deserialize<EnvelopeSendCatalog>(envelope.EnvelopeJson);
-                            break;
-                        }
-                    case MessageType.ASK_CATALOG:
-                        {
-                            EnvelopeSendCatalog sendCatalog = new EnvelopeSendCatalog();
-                            //sendCatalog.Content = catalog. _maListMediaData;
-                            //SendMessage(mqttClient, MessageType.ENVOIE_CATALOGUE, confs.MQTT.ClientId, sendCatalog, "test");
-                            break;
-                        }
-                    case MessageType.SEND_FILE:
-                        {
-                            EnvelopeSendFile enveloppeEnvoieFichier = JsonSerializer.Deserialize<EnvelopeSendFile>(envelope.EnvelopeJson);
-                            break;
-                        }
-                    case MessageType.ASK_FILE:
-                        {
-                            break;
-                        }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-            }
-        }
-
         public static async void GetMessage()
         {
             mqttClient.ApplicationMessageReceivedAsync += async e =>
@@ -121,88 +83,92 @@ namespace BitRuisseau.services
 
                 //TODO
                 //in CreateConnection noLocal is disabled (version error) so check sender id, if contains "Joachim" we consider it's ourself so we don't respond to ourself
-                if (jsonReceivedMessage.Contains("Joachim")) { return; }
+                if (jsonReceivedMessage.Contains("Joachim")) return;
 
+                //Deserialize the basic message to get his type
                 GenericEnvelope? deserializedMessage = DeserializeGenericMessage(jsonReceivedMessage);
                 Debug.WriteLine($"Message successfully deserialized : messageType={deserializedMessage.MessageType} - SenderId={deserializedMessage.SenderId} - EnvelopeJson={deserializedMessage.EnvelopeJson}");
 
-                switch (deserializedMessage.MessageType)
-                {
-                    case MessageType.ASK_CATALOG:
-                        {
-                            MessageBox.Show("ASK_CATALOG");
-                            break;
-                        }
-                    case MessageType.SEND_CATALOG:
-                        {
-                            MessageBox.Show("SEND_CATALOG");
-                            break;
-                        }
-                    case MessageType.SEND_FILE:
-                        {
-                            MessageBox.Show("SEND_FILE");
-                            break;
-                        }
-                    case MessageType.ASK_FILE:
-                        {
-                            MessageBox.Show("ASK_FILE");
-                            break;
-                        }
-                }
+                ProcessMessage(deserializedMessage);
             };
+        }
+
+        private static void ProcessMessage(GenericEnvelope? deserializedMessage)
+        {
+            switch (deserializedMessage.MessageType)
+            {
+                case MessageType.ASK_CATALOG:
+                    {
+                        Debug.WriteLine("ASK_CATALOG");
+                        SendCatalog();
+                        break;
+                    }
+                case MessageType.SEND_CATALOG:
+                    {
+                        Debug.WriteLine("SEND_CATALOG");
+                        GetCatalog();
+                        break;
+                    }
+                case MessageType.SEND_FILE:
+                    {
+                        Debug.WriteLine("SEND_FILE");
+                        DownloadFile();
+                        break;
+                    }
+                case MessageType.ASK_FILE:
+                    {
+                        Debug.WriteLine("ASK_FILE");
+                        SendFile();
+                        break;
+                    }
+            }
+        }
+
+        private static void SendFile()
+        {
+            //EnvelopeSendFile enveloppeEnvoieFichier = JsonSerializer.Deserialize<EnvelopeSendFile>(envelope.EnvelopeJson);
+        }
+
+        private static void DownloadFile()
+        {
+
+        }
+
+        private static void GetCatalog()
+        {
+
+        }
+
+        private static async void SendCatalog()
+        {
+            EnvelopeSendCatalog sendCatalog = new EnvelopeSendCatalog();
+            string path = @"../../../../musicList.csv";
+            string musicList = GetMusicList(path);
+
+            string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}"; // TODO send serialized catalog
+
+            if (mqttClient == null || !mqttClient.IsConnected)
+            {
+                MessageBox.Show("Client not connected. Reconnecting...");
+                await mqttClient.ConnectAsync(mqttOptions);
+            }
+
+            // Créez le message à envoyer
+            var message = new MqttApplicationMessageBuilder()
+                .WithTopic(confs.MQTT.Topic)
+                .WithPayload(response)
+                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                .WithRetainFlag(false)
+                .Build();
+
+            // Envoyez le message
+            mqttClient.PublishAsync(message);
+            Console.WriteLine("Message sent successfully!");
         }
 
         private static GenericEnvelope? DeserializeGenericMessage(string serializedMessage)
         {
             return JsonSerializer.Deserialize<GenericEnvelope>(serializedMessage);
-        }
-
-        public static async void GetAndRespondToCatalogAsking()
-        {
-            // Callback function when a message is received
-            mqttClient.ApplicationMessageReceivedAsync += async e =>
-            {
-                string jsonReceivedMessage = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-
-                MessageBox.Show($"Received message: {jsonReceivedMessage}");
-
-                // HELLO is the message to ask the catalog - also check if the sender is not myself (noLocal deactivated)
-                if (/*receivedMessage.Contains("HELLO") == true && */!jsonReceivedMessage.Contains("Joachim")) //TODO find where the messageType is check if is ASK_CATALOG
-                {
-                    // Get the list of the music
-                    string path = @"../../../../musicList.csv";
-                    string musicList = GetMusicList(path);
-
-                    // Deserialize envelope
-                    var messageEnvelope = JsonSerializer.Deserialize<GenericEnvelope>(jsonReceivedMessage);
-                    var envelopeAskCatalog = JsonSerializer.Deserialize<EnvelopeAskCatalog>(messageEnvelope.EnvelopeJson);
-
-                    //Creating the envelope
-                    Debug.WriteLine("test" + jsonReceivedMessage);
-
-                    string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}"; // TODO send serialized catalog
-
-                    if (mqttClient == null || !mqttClient.IsConnected)
-                    {
-                        MessageBox.Show("Client not connected. Reconnecting...");
-                        await mqttClient.ConnectAsync(mqttOptions);
-                    }
-
-                    // Créez le message à envoyer
-                    var message = new MqttApplicationMessageBuilder()
-                        .WithTopic(confs.MQTT.Topic)
-                        .WithPayload(response)
-                        .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-                        .WithRetainFlag(false)
-                        .Build();
-
-                    // Envoyez le message
-                    mqttClient.PublishAsync(message);
-                    Console.WriteLine("Message sent successfully!");
-                }
-
-                return;
-            };
         }
 
         private static string GetMusicList(string path)

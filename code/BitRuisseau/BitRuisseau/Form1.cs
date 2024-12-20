@@ -181,6 +181,7 @@ namespace BitRuisseau
         private async void SearchCatalog(object sender, EventArgs e)
         {
             //services.MQTT.GetAndRespondToCatalogAsking();
+            //TODO send a serialized ask catalog
             services.MQTT.SendData("HELLO");
         }
     }
