@@ -4,6 +4,7 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
@@ -90,7 +91,7 @@ namespace BitRuisseau.services
 
                 //TODO
                 //in CreateConnection noLocal is disabled (version error) so check sender id, if contains "Joachim" we consider it's ourself so we don't respond to ourself
-                if (jsonReceivedMessage.Contains("Joachim")) return;
+                if (jsonReceivedMessage.Contains("Joachim")) { Debug.WriteLine("It's my own message, stop processing"); return; }
 
                 //Deserialize the basic message to get his type
                 GenericEnvelope? deserializedMessage = DeserializeGenericMessage(jsonReceivedMessage);
@@ -165,8 +166,15 @@ namespace BitRuisseau.services
         private static async void SendCatalog()
         {
             EnvelopeSendCatalog sendCatalog = new EnvelopeSendCatalog();
+
             string path = @"../../../../musicList.csv";
             string musicList = GetMusicList(path);
+
+            //if musicList is empty return
+            if (musicList.Length==0) { return; }
+
+            List<MediaData> list = new List<MediaData>();
+            list = GetMedia();
 
             string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}"; // TODO send serialized catalog
 
@@ -187,6 +195,24 @@ namespace BitRuisseau.services
             // Envoyez le message
             mqttClient.PublishAsync(message);
             Console.WriteLine("Message sent successfully!");
+        }
+
+        public static List<MediaData> GetMedia()
+        {
+            List<MediaData> medias = new List<MediaData>();
+            string path = @"../../../../musicList.csv";
+            using (StreamReader sr = new StreamReader(path))
+            {
+                string lines;
+                while ((lines = sr.ReadLine()) != null)
+                {
+                    string[] line_data = lines.Split(';');
+                    FileInfo fileInfo = new FileInfo(line_data[0]);
+                    //MediaData data = new MediaData(line_data[0], line_data[1], line_data[4], line_data[2]);
+                }
+            }
+
+            return medias;
         }
 
         /// <summary>

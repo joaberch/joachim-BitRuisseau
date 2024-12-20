@@ -7,7 +7,7 @@ namespace BitRuisseau
 {
     public partial class Form1 : Form
     {
-        MyCatalog MyMusic  = new MyCatalog();
+        MyCatalog MyMusic  = new MyCatalog(); //TODO - if a music is added in the local library we need to reload the app for it to be displayed
 
         public Form1()
         {
@@ -15,8 +15,7 @@ namespace BitRuisseau
             InitializeCatalogMenu();
             confs.MQTT.BrokerIP = "mqtt.blue.section-inf.ch"; //base value
             services.MQTT.CreateConnection();
-            services.MQTT.GetMessage(); //Listen for catalog asking
-            //services.MQTT.Subscribe();
+            services.MQTT.GetMessage(); //Listen for every message
         }
 
         /// <summary>

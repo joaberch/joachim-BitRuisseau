@@ -20,5 +20,13 @@ namespace BitRuisseau.confs
         public long File_size { get => _file_size; set => _file_size = value; }
         public string File_duration { get => _file_duration; set => _file_duration = value; }
 
+        public MediaData(string name, string artist, string type, long size, string duration)
+        {
+            File_name = name;
+            File_artist = artist;
+            File_type = type;
+            File_size = size;
+            File_duration = duration;
+        }
     }
 }
