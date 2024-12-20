@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BitRuisseau.Models
 {
@@ -21,7 +23,7 @@ namespace BitRuisseau.Models
     public class EnvelopeSendCatalog
     {
         /* 
-            type 1 ENVOIE_CATALOGUE
+            type 1 SEND_CATALOG
          */
         private int _type;
         private string _guid;
@@ -35,7 +37,7 @@ namespace BitRuisseau.Models
     public class EnvelopeAskCatalog
     {
         /* 
-            type 2 DEMANDE_CATALOGUE
+            type 2 ASK_CATALOG
          */
         private int _type;
         private string _guid;
@@ -49,7 +51,7 @@ namespace BitRuisseau.Models
     public class EnvelopeSendFile
     {
         /* 
-            type 3 ENVOIE_FICHIER
+            type 3 SEND_FILE
          */
         private int _type;
         private string _guid;
@@ -58,5 +60,44 @@ namespace BitRuisseau.Models
         public string Guid { get => _guid; set => _guid = value; }
         public string Content { get => _content; set => _content = value; }
         public int Type { get => _type; set => _type = value; }
+    }
+    public class AskFile
+    {
+        /*
+            type 4 ASK_FILE
+        */
+        private int _type;
+        private string _guid;
+        private string _personnal_topic;
+        private string _file_name;
+
+        public int Type
+        {
+            get => _type;
+            set => _type = value;
+        }
+
+        public string Guid
+        {
+            get => _guid;
+            set => _guid = value;
+        }
+
+        public string FileName
+        {
+            get => _file_name;
+            set => _file_name = value;
+        }
+
+        public string PersonnalTopic
+        {
+            get => _personnal_topic;
+            set => _personnal_topic = value;
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 }

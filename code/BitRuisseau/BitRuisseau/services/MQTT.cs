@@ -81,21 +81,25 @@ namespace BitRuisseau.services
                 if (envelope.SenderId == confs.MQTT.ClientId) return;
                 switch (envelope.MessageType)
                 {
-                    case MessageType.ENVOIE_CATALOGUE:
+                    case MessageType.SEND_CATALOG:
                         {
                             EnvelopeSendCatalog enveloppeEnvoieCatalogue = JsonSerializer.Deserialize<EnvelopeSendCatalog>(envelope.EnvelopeJson);
                             break;
                         }
-                    case MessageType.DEMANDE_CATALOGUE:
+                    case MessageType.ASK_CATALOG:
                         {
                             EnvelopeSendCatalog sendCatalog = new EnvelopeSendCatalog();
                             //sendCatalog.Content = catalog. _maListMediaData;
                             //SendMessage(mqttClient, MessageType.ENVOIE_CATALOGUE, confs.MQTT.ClientId, sendCatalog, "test");
                             break;
                         }
-                    case MessageType.ENVOIE_FICHIER:
+                    case MessageType.SEND_FILE:
                         {
                             EnvelopeSendFile enveloppeEnvoieFichier = JsonSerializer.Deserialize<EnvelopeSendFile>(envelope.EnvelopeJson);
+                            break;
+                        }
+                    case MessageType.ASK_FILE:
+                        {
                             break;
                         }
                 }

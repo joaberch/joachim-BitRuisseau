@@ -1,6 +1,7 @@
 ﻿public enum MessageType
 {
-    ENVOIE_CATALOGUE,
-    DEMANDE_CATALOGUE,
-    ENVOIE_FICHIER
+    SEND_CATALOG,
+    ASK_CATALOG,
+    SEND_FILE,
+    ASK_FILE
 }
