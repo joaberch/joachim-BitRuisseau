@@ -1,4 +1,5 @@
-﻿using BitRuisseau.Models;
+﻿using BitRuisseau.confs;
+using BitRuisseau.Models;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
@@ -110,23 +111,75 @@ namespace BitRuisseau.services
             }
         }
 
+        public static async void GetMessage()
+        {
+            mqttClient.ApplicationMessageReceivedAsync += async e =>
+            {
+                string jsonReceivedMessage = Encoding.UTF8.GetString(e.ApplicationMessage.Payload); //Get message
+                MessageBox.Show(jsonReceivedMessage);
+                Debug.WriteLine($"Message received : {jsonReceivedMessage}");
+
+                //TODO
+                //in CreateConnection noLocal is disabled (version error) so check sender id, if contains "Joachim" we consider it's ourself so we don't respond to ourself
+                if (jsonReceivedMessage.Contains("Joachim")) { return; }
+
+                GenericEnvelope? deserializedMessage = DeserializeGenericMessage(jsonReceivedMessage);
+                Debug.WriteLine($"Message successfully deserialized : messageType={deserializedMessage.MessageType} - SenderId={deserializedMessage.SenderId} - EnvelopeJson={deserializedMessage.EnvelopeJson}");
+
+                switch (deserializedMessage.MessageType)
+                {
+                    case MessageType.ASK_CATALOG:
+                        {
+                            MessageBox.Show("ASK_CATALOG");
+                            break;
+                        }
+                    case MessageType.SEND_CATALOG:
+                        {
+                            MessageBox.Show("SEND_CATALOG");
+                            break;
+                        }
+                    case MessageType.SEND_FILE:
+                        {
+                            MessageBox.Show("SEND_FILE");
+                            break;
+                        }
+                    case MessageType.ASK_FILE:
+                        {
+                            MessageBox.Show("ASK_FILE");
+                            break;
+                        }
+                }
+            };
+        }
+
+        private static GenericEnvelope? DeserializeGenericMessage(string serializedMessage)
+        {
+            return JsonSerializer.Deserialize<GenericEnvelope>(serializedMessage);
+        }
+
         public static async void GetAndRespondToCatalogAsking()
         {
             // Callback function when a message is received
             mqttClient.ApplicationMessageReceivedAsync += async e =>
             {
-                string receivedMessage = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                string jsonReceivedMessage = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
-                //MessageBox.Show($"Received message: {receivedMessage}");
+                MessageBox.Show($"Received message: {jsonReceivedMessage}");
 
                 // HELLO is the message to ask the catalog - also check if the sender is not myself (noLocal deactivated)
-                if (/*receivedMessage.Contains("HELLO") == true && */receivedMessage.Contains("Joachim")) //TODO find where the messageType is check if is "DEMANDE_CATALOGUE"
+                if (/*receivedMessage.Contains("HELLO") == true && */!jsonReceivedMessage.Contains("Joachim")) //TODO find where the messageType is check if is ASK_CATALOG
                 {
                     // Get the list of the music
                     string path = @"../../../../musicList.csv";
                     string musicList = GetMusicList(path);
 
-                    // Build the message to send (will be changed in JSON)
+                    // Deserialize envelope
+                    var messageEnvelope = JsonSerializer.Deserialize<GenericEnvelope>(jsonReceivedMessage);
+                    var envelopeAskCatalog = JsonSerializer.Deserialize<EnvelopeAskCatalog>(messageEnvelope.EnvelopeJson);
+
+                    //Creating the envelope
+                    Debug.WriteLine("test" + jsonReceivedMessage);
+
                     string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}"; // TODO send serialized catalog
 
                     if (mqttClient == null || !mqttClient.IsConnected)

@@ -15,7 +15,7 @@ namespace BitRuisseau
             InitializeCatalogMenu();
             confs.MQTT.BrokerIP = "mqtt.blue.section-inf.ch"; //base value
             services.MQTT.CreateConnection();
-            services.MQTT.GetAndRespondToCatalogAsking(); //Listen for catalog asking
+            services.MQTT.GetMessage(); //Listen for catalog asking
             //services.MQTT.Subscribe();
         }
 
