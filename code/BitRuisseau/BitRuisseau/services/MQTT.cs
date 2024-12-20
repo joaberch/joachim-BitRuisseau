@@ -116,7 +116,7 @@ namespace BitRuisseau.services
                 MessageBox.Show($"Received message: {receivedMessage}");
 
                 // HELLO is the message to ask the catalog - also check if the sender is not myself (noLocal deactivated)
-                if (receivedMessage.Contains("HELLO") == true && e.ClientId.ToString().Contains("Joachim")) //TODO find where the messageType is check if is "DEMANDE_CATALOGUE"
+                if (receivedMessage.Contains("HELLO") == true && !e.ClientId.ToString().Contains("Joachim")) //TODO find where the messageType is check if is "DEMANDE_CATALOGUE"
                 {
                     // Get the list of the music
                     string path = @"../../../../musicList.csv";
