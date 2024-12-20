@@ -117,17 +117,17 @@ namespace BitRuisseau.services
             {
                 string receivedMessage = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
-                MessageBox.Show($"Received message: {receivedMessage}");
+                //MessageBox.Show($"Received message: {receivedMessage}");
 
                 // HELLO is the message to ask the catalog - also check if the sender is not myself (noLocal deactivated)
-                if (receivedMessage.Contains("HELLO") == true && !e.ClientId.ToString().Contains("Joachim")) //TODO find where the messageType is check if is "DEMANDE_CATALOGUE"
+                if (/*receivedMessage.Contains("HELLO") == true && */receivedMessage.Contains("Joachim")) //TODO find where the messageType is check if is "DEMANDE_CATALOGUE"
                 {
                     // Get the list of the music
                     string path = @"../../../../musicList.csv";
                     string musicList = GetMusicList(path);
 
                     // Build the message to send (will be changed in JSON)
-                    string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}";
+                    string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}"; // TODO send serialized catalog
 
                     if (mqttClient == null || !mqttClient.IsConnected)
                     {
