@@ -217,7 +217,6 @@ namespace BitRuisseau.services
 			{
 				var value = prop.GetValue(obj);
 
-				// Gérez différents types de valeurs
 				if (value is string) return $"\"{prop.Name}\": \"{value}\"";
 				if (value is DateTime) return $"\"{prop.Name}\": \"{((DateTime)value).ToString("o")}\"";
 				if (value is IEnumerable<object> enumerable)
