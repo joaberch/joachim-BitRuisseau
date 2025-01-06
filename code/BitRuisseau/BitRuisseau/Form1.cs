@@ -13,7 +13,7 @@ namespace BitRuisseau
         {
             InitializeComponent();
             InitializeCatalogMenu();
-            confs.MQTT.BrokerIP = "mqtt.blue.section-inf.ch"; //base value
+            confs.MQTT.BrokerIP = "blue.section-inf.ch"; //base value
             services.MQTT.CreateConnection();
             services.MQTT.GetMessage(); //Listen for every message
         }

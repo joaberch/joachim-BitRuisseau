@@ -86,15 +86,16 @@ namespace BitRuisseau.services
             mqttClient.ApplicationMessageReceivedAsync += async e =>
             {
                 string jsonReceivedMessage = Encoding.UTF8.GetString(e.ApplicationMessage.Payload); //Get message
-                MessageBox.Show(jsonReceivedMessage);
-                Debug.WriteLine($"Message received : {jsonReceivedMessage}");
 
-                //TODO
-                //in CreateConnection noLocal is disabled (version error) so check sender id, if contains "Joachim" we consider it's ourself so we don't respond to ourself
-                if (jsonReceivedMessage.Contains("Joachim")) { Debug.WriteLine("It's my own message, stop processing"); return; }
+				//TODO
+				//in CreateConnection noLocal is disabled (version error) so check sender id, if contains "Joachim" we consider it's ourself so we don't respond to ourself
+				//if (jsonReceivedMessage.Contains("Joachim")) { Debug.WriteLine("It's my own message, stop processing"); return; }
 
-                //Deserialize the basic message to get his type
-                GenericEnvelope? deserializedMessage = DeserializeGenericMessage(jsonReceivedMessage);
+				MessageBox.Show(jsonReceivedMessage);
+				Debug.WriteLine($"Message received : {jsonReceivedMessage}");
+
+				//Deserialize the basic message to get his type
+				GenericEnvelope? deserializedMessage = DeserializeGenericMessage(jsonReceivedMessage);
                 Debug.WriteLine($"Message successfully deserialized : messageType={deserializedMessage.MessageType} - SenderId={deserializedMessage.SenderId} - EnvelopeJson={deserializedMessage.EnvelopeJson}");
 
                 ProcessMessage(deserializedMessage);
@@ -168,10 +169,10 @@ namespace BitRuisseau.services
             EnvelopeSendCatalog sendCatalog = new EnvelopeSendCatalog();
 
             string path = @"../../../../musicList.csv";
-            string musicList = GetMusicList(path);
+            List<string> musicList = GetMusicList(path);
 
             //if musicList is empty return
-            if (musicList.Length==0) { return; }
+            if (musicList.Count()==0) { return; }
 
             List<MediaData> list = new List<MediaData>();
             list = services.MyCatalog.GetMedia();
@@ -182,11 +183,16 @@ namespace BitRuisseau.services
             envelope.SenderId = confs.MQTT.ClientId;
             envelope.EnvelopeJson = sendCatalog.ToJson();
 
-            //TODO
+			//TODO
 
-            string response = $"{confs.MQTT.ClientId} (Joachim) possède les musiques suivantes :\n{musicList}"; // TODO send serialized catalog
+			string response = ToJson(new
+			{
+				SenderId = confs.MQTT.ClientId,
+				MessageType = MessageType.SEND_CATALOG,
+				Catalog = sendCatalog.Content
+			});
 
-            if (mqttClient == null || !mqttClient.IsConnected)
+			if (mqttClient == null || !mqttClient.IsConnected)
             {
                 MessageBox.Show("Client not connected. Reconnecting...");
                 await mqttClient.ConnectAsync(mqttOptions);
@@ -202,13 +208,33 @@ namespace BitRuisseau.services
 
             // Envoyez le message
             mqttClient.PublishAsync(message);
-            Console.WriteLine("Message sent successfully!");
         }
 
-        /// <summary>
-        /// Ask Catalog on button "Rechercher" clicked
-        /// </summary>
-        public static async void AskCatalog()
+		private static string ToJson(object obj)
+		{
+			var properties = obj.GetType().GetProperties();
+			var jsonParts = properties.Select(prop =>
+			{
+				var value = prop.GetValue(obj);
+
+				// Gérez différents types de valeurs
+				if (value is string) return $"\"{prop.Name}\": \"{value}\"";
+				if (value is DateTime) return $"\"{prop.Name}\": \"{((DateTime)value).ToString("o")}\"";
+				if (value is IEnumerable<object> enumerable)
+				{
+					var items = string.Join(", ", enumerable.Select(item => ToJson(item)));
+					return $"\"{prop.Name}\": [{items}]";
+				}
+				return $"\"{prop.Name}\": {value}";
+			});
+
+			return "{" + string.Join(", ", jsonParts) + "}";
+		}
+
+		/// <summary>
+		/// Ask Catalog on button "Rechercher" clicked
+		/// </summary>
+		public static async void AskCatalog()
         {
             EnvelopeAskCatalog askCatalog = new EnvelopeAskCatalog();
 
@@ -235,24 +261,26 @@ namespace BitRuisseau.services
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        private static string GetMusicList(string path)
+        private static List<string> GetMusicList(string path)
         {
-            string musicData = File.ReadAllText(path);
-            List<string> musicTitle = new List<string>();
-            string[] data = musicData.Split(';');
-            StringBuilder result = new StringBuilder();
+			List<string> musicTitles = new List<string>();
 
-            for (int i = 0; i<= data.Count(); ++i)
-            {
-                if (i == 0 || i % 5 == 0)
-                {
-                    musicTitle.Add(data[i]);
-                }
-            }
+			foreach (string line in File.ReadLines(path))
+			{
+				string[] data = line.Split(';'); // Split each line by semicolons
 
-            musicTitle.ForEach(m => result.Append(m));
+				// Process each element in the current line
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (i == 0)
+					{
+						musicTitles.Add(data[i]);
+					}
+				}
+			}
 
-            return result.ToString();
-        }
+            return musicTitles;
+
+		}
     }
 }
