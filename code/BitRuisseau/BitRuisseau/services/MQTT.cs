@@ -194,8 +194,11 @@ namespace BitRuisseau.services
 
 			if (mqttClient == null || !mqttClient.IsConnected)
             {
-                MessageBox.Show("Client not connected. Reconnecting...");
-                await mqttClient.ConnectAsync(mqttOptions);
+                try
+                {
+                    MessageBox.Show("Client not connected. Reconnecting...");
+                    await mqttClient.ConnectAsync(mqttOptions);
+                } catch { }
             }
 
             // Créez le message à envoyer
