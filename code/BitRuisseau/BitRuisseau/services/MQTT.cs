@@ -198,27 +198,7 @@ namespace BitRuisseau.services
             envelope.SenderId = confs.MQTT.ClientId;
             envelope.EnvelopeJson = sendCatalog.ToJson();
 
-            string response = envelope.ToJson();
-
-			if (mqttClient == null || !mqttClient.IsConnected)
-            {
-                try
-                {
-                    MessageBox.Show("Client not connected. Reconnecting...");
-                    await mqttClient.ConnectAsync(mqttOptions);
-                } catch { }
-            }
-
-            // Créez le message à envoyer
-            var message = new MqttApplicationMessageBuilder()
-                .WithTopic(confs.MQTT.Topic)
-                .WithPayload(response)
-                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-                .WithRetainFlag(false)
-                .Build();
-
-            // Envoyez le message
-            mqttClient.PublishAsync(message);
+            SendData(envelope.ToJson());
         }
 
 		private static string ToJson(object obj)
