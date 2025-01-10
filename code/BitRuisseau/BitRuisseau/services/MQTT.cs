@@ -130,7 +130,7 @@ namespace BitRuisseau.services
                 case MessageType.ASK_FILE:
                     {
                         Debug.WriteLine("ASK_FILE");
-                        SendFile();
+                        SendFile(deserializedMessage);
                         break;
                     }
             }
@@ -139,9 +139,18 @@ namespace BitRuisseau.services
         /// <summary>
         /// Send file
         /// </summary>
-        private static void SendFile()
+        private static void SendFile(GenericEnvelope deserializedMessage)
         {
-            //EnvelopeSendFile enveloppeEnvoieFichier = JsonSerializer.Deserialize<EnvelopeSendFile>(envelope.EnvelopeJson);
+            try
+            {
+                AskFile askFile = JsonSerializer.Deserialize<AskFile>(deserializedMessage.EnvelopeJson);
+                Debug.WriteLine(askFile);
+                //TODO if mycatalog has that name we send
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         /// <summary>
