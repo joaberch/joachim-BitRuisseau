@@ -16,27 +16,27 @@ namespace BitRuisseau.services
             List<MediaData> catalog = new List<MediaData>();
         }
 
-        List<MusicFile> musicFiles = new List<MusicFile>();
+        List<MediaData> musicFiles = new List<MediaData>();
         string path = @"../../../../musicList.csv";
 
-        public void AddMusic(MusicFile music)
+        public void AddMusic(MediaData music)
         {
             musicFiles.Add(music);
             SaveMusicDataInTxt(music);
         }
 
-        private void DisplayMusicAdded(MusicFile musicFile)
+        private void DisplayMusicAdded(MediaData musicFile)
         {
             MessageBox.Show($"Musique ajoutée :\n" +
-                $"Nom: {musicFile.Name}\n" +
-                $"Artiste: {musicFile.ArtistName}\n" +
-                $"Emplacement du fichier: {musicFile.Path}\n" +
-                $"Taille du fichier: {musicFile.Size}\n" +
-                $"Extension du fichier: {musicFile.Extension}",
+                $"Nom: {musicFile.FileName}\n" +
+                $"Artiste: {musicFile.FileArtist}\n" +
+                $"Emplacement du fichier: {musicFile.FilePath}\n" +
+                $"Taille du fichier: {musicFile.FileSize}\n" +
+                $"Extension du fichier: {musicFile.FileType}",
                 "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void SaveMusicDataInTxt(MusicFile music)
+        private void SaveMusicDataInTxt(MediaData music)
         {
             if (!Path.Exists(path))
             {
@@ -45,9 +45,9 @@ namespace BitRuisseau.services
             try
             {
                 string fileData = File.ReadAllText(path);
-                if (!fileData.Contains(music.Path))
+                if (!fileData.Contains(music.FilePath))
                 {
-                    System.IO.File.AppendAllText(path, $"{music.Name}; {music.ArtistName}; {music.Size}; {music.Path}; {music.Extension};" + Environment.NewLine);
+                    System.IO.File.AppendAllText(path, $"{music.FileName}; {music.FileArtist}; {music.FileSize}; {music.FilePath}; {music.FileType};" + Environment.NewLine);
                     DisplayMusicAdded(music);
                 } else
                 {
@@ -72,7 +72,14 @@ namespace BitRuisseau.services
                     Debug.WriteLine(line_data[3]);
                     if (File.Exists(line_data[3])) { Debug.WriteLine("exists"); }
                     //var file = TagLib.File.Create(line_data[3]);
-                    MediaData data = new MediaData(line_data[0], line_data[1], line_data[4], (long)Convert.ToDouble(line_data[2]), "0"/*test value*//*file.Properties.Duration.ToString()*/);
+                    MediaData data = new MediaData()
+                    {
+                        FileName = line_data[0],
+                        FileArtist = line_data[1],
+                        FileType = line_data[4],
+                        FileSize = (long)Convert.ToDouble(line_data[2]),
+                        FileDuration = "0",
+                    };
                     medias.Add(data);
                 }
             }

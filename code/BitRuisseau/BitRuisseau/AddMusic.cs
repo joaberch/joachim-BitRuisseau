@@ -1,4 +1,5 @@
-﻿using BitRuisseau.Models;
+﻿using BitRuisseau.confs;
+using BitRuisseau.Models;
 using BitRuisseau.services;
 using System;
 using System.Drawing;
@@ -121,9 +122,16 @@ namespace BitRuisseau
             long fileSize = GetFileSize(lblFilePath.Text);
             string fileExtension = GetExtension(lblFilePath.Text);
 
-            MusicFile musicFile = new MusicFile(musicName, fileSize, fileExtension, filePath, artistName);
+            MediaData media = new MediaData()
+            {
+                FileName = musicName,
+                FileArtist = artistName,
+                FilePath = filePath,
+                FileSize = fileSize,
+                FileType = fileExtension,
+            };
 
-            MyMusic.AddMusic(musicFile);
+            MyMusic.AddMusic(media);
             
             //TODO - emit event that reload the listbox
             this.Close();
