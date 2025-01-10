@@ -119,7 +119,7 @@ namespace BitRuisseau.services
                 case MessageType.SEND_CATALOG:
                     {
                         Debug.WriteLine("SEND_CATALOG");
-                        GetCatalog();
+                        GetCatalog(deserializedMessage);
                         break;
                     }
                 case MessageType.SEND_FILE:
@@ -156,9 +156,16 @@ namespace BitRuisseau.services
         /// <summary>
         /// Get Catalog
         /// </summary>
-        private static void GetCatalog()
+        private static void GetCatalog(GenericEnvelope deserializedMessage)
         {
-
+            try
+            {
+                string json = deserializedMessage.EnvelopeJson;
+                EnvelopeSendCatalog catalog = JsonSerializer.Deserialize<EnvelopeSendCatalog>(json);
+                List<MediaData> list = catalog.Content;
+            } catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
         }
 
         /// <summary>
@@ -174,10 +181,7 @@ namespace BitRuisseau.services
             //if musicList is empty return
             if (musicList.Count()==0) { return; }
 
-            List<MediaData> list = new List<MediaData>();
-            list = services.MyCatalog.GetMedia();
-
-            sendCatalog.Content = list;
+            sendCatalog.Content = MyCatalog.GetMedia();
             GenericEnvelope envelope = new GenericEnvelope();
             envelope.MessageType = MessageType.SEND_CATALOG;
             envelope.SenderId = confs.MQTT.ClientId;
