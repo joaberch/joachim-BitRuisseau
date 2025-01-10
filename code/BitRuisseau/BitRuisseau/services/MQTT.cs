@@ -183,14 +183,7 @@ namespace BitRuisseau.services
             envelope.SenderId = confs.MQTT.ClientId;
             envelope.EnvelopeJson = sendCatalog.ToJson();
 
-			//TODO
-
-			string response = ToJson(new
-			{
-				SenderId = confs.MQTT.ClientId,
-				MessageType = MessageType.SEND_CATALOG,
-				Catalog = sendCatalog.Content
-			});
+            string response = envelope.ToJson();
 
 			if (mqttClient == null || !mqttClient.IsConnected)
             {

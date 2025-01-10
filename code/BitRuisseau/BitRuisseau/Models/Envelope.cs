@@ -19,6 +19,11 @@ namespace BitRuisseau.Models
         public MessageType MessageType { get => _messageType; set => _messageType = value; }
         public string SenderId { get => _senderId; set => _senderId = value; }
         public string EnvelopeJson { get => _envelopeJson; set => _envelopeJson = value; }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
     public class EnvelopeSendCatalog
     {
