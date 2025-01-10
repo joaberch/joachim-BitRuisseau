@@ -29,7 +29,7 @@ namespace BitRuisseau.services
 
         public DataGridView GetPotentialMusic(DataGridView dataGridView)
         {
-            potentialMusicFiles.ForEach(music => dataGridView.Rows.Add(music.FileName, music.FileArtist, music.FileType, music.FileSize, music.FileDuration));
+            potentialMusicFiles.ForEach(music => dataGridView.Rows.Add(music.FileName, music.FileArtist, music.FileType, music.FileSize, music.FileDuration, new Button()));
             return dataGridView;
         }
 

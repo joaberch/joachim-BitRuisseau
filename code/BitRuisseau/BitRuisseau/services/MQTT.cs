@@ -272,5 +272,24 @@ namespace BitRuisseau.services
             return musicTitles;
 
 		}
+
+        /// <summary>
+        /// Ask Music File
+        /// </summary>
+        /// <param name="dataGridView"></param>
+        public static void AskMusic(string musicName)
+        {
+            AskFile askFile = new AskFile()
+            {
+                FileName = musicName,
+            };
+            GenericEnvelope genericEnvelope = new GenericEnvelope
+            {
+                MessageType = MessageType.ASK_FILE,
+                SenderId = confs.MQTT.ClientId,
+                EnvelopeJson = askFile.ToJson(),
+            };
+            SendData(JsonSerializer.Serialize(genericEnvelope));
+        }
     }
 }

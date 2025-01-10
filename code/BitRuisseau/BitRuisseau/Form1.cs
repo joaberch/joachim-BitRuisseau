@@ -60,6 +60,21 @@ namespace BitRuisseau
             dataGridView.Columns.Add("Type", "Type");
             dataGridView.Columns.Add("Taille", "Taille");
             dataGridView.Columns.Add("Durée", "Durée");
+            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn
+            {
+                Name = "Télécharger",
+                HeaderText = "Télécharger",
+                Text = "Télécharger",
+                UseColumnTextForButtonValue = true,
+            };
+            dataGridView.Columns.Add(buttonColumn);
+            dataGridView.CellClick += (sender, e) =>
+            {
+                if (e.ColumnIndex == dataGridView.Columns["Télécharger"].Index && e.RowIndex >= 0)
+                {
+                    MQTT.AskMusic(dataGridView.Rows[e.RowIndex].Cells["Nom"].Value.ToString());
+                }
+            };
 
             myCatalog.Click += new EventHandler(MyCatalogMenu);
             SearchMusic.Click += new EventHandler(SearchMenu);
