@@ -15,7 +15,7 @@ namespace BitRuisseau.services
     {
         static IMqttClient mqttClient; // Client MQTT global
         static MqttClientOptions mqttOptions; // Global connection options
-        MyCatalog catalog = new MyCatalog();
+        public static MyCatalog myCatalog = new MyCatalog();
 
         /// <summary>
         /// Connect to the broker specified in the confs
@@ -161,11 +161,12 @@ namespace BitRuisseau.services
             try
             {
                 string json = deserializedMessage.EnvelopeJson;
-                EnvelopeSendCatalog catalog = JsonSerializer.Deserialize<EnvelopeSendCatalog>(json);
-                List<MediaData> list = catalog.Content;
+                EnvelopeSendCatalog envelopeCatalog = JsonSerializer.Deserialize<EnvelopeSendCatalog>(json);
+                envelopeCatalog.Content.ForEach(myCatalog.AddPotentialMusic);
             } catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+            }
         }
 
         /// <summary>
@@ -181,7 +182,7 @@ namespace BitRuisseau.services
             //if musicList is empty return
             if (musicList.Count()==0) { return; }
 
-            sendCatalog.Content = MyCatalog.GetMedia();
+            sendCatalog.Content = MyCatalog.GetMyMedia();
             GenericEnvelope envelope = new GenericEnvelope();
             envelope.MessageType = MessageType.SEND_CATALOG;
             envelope.SenderId = confs.MQTT.ClientId;

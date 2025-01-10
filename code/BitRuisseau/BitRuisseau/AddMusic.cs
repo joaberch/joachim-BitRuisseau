@@ -132,7 +132,8 @@ namespace BitRuisseau
             };
 
             MyMusic.AddMusic(media);
-            
+            MyMusic.SaveMusicDataInTxt(media);
+
             //TODO - emit event that reload the listbox
             this.Close();
         }

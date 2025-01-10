@@ -13,16 +13,21 @@ namespace BitRuisseau.services
     {
         public MyCatalog() 
         {
-            List<MediaData> catalog = new List<MediaData>();
+            myMusicFiles = GetMyMedia();
         }
 
-        List<MediaData> musicFiles = new List<MediaData>();
+        List<MediaData> myMusicFiles = new List<MediaData>();
+        List<MediaData> potentialMusicFiles = new List<MediaData>();
         string path = @"../../../../musicList.csv";
 
         public void AddMusic(MediaData music)
         {
-            musicFiles.Add(music);
-            SaveMusicDataInTxt(music);
+            myMusicFiles.Add(music);
+        }
+
+        public void AddPotentialMusic(MediaData music)
+        {
+            potentialMusicFiles.Add(music);
         }
 
         private void DisplayMusicAdded(MediaData musicFile)
@@ -36,7 +41,7 @@ namespace BitRuisseau.services
                 "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void SaveMusicDataInTxt(MediaData music)
+        public void SaveMusicDataInTxt(MediaData music)
         {
             if (!Path.Exists(path))
             {
@@ -59,7 +64,7 @@ namespace BitRuisseau.services
             }
         }
 
-        public static List<MediaData> GetMedia()
+        public static List<MediaData> GetMyMedia()
         {
             List<MediaData> medias = new List<MediaData>();
             string path = @"../../../../musicList.csv";
@@ -72,15 +77,23 @@ namespace BitRuisseau.services
                     Debug.WriteLine(line_data[3]);
                     if (File.Exists(line_data[3])) { Debug.WriteLine("exists"); }
                     //var file = TagLib.File.Create(line_data[3]);
-                    MediaData data = new MediaData()
+                    try
                     {
-                        FileName = line_data[0],
-                        FileArtist = line_data[1],
-                        FileType = line_data[4],
-                        FileSize = (long)Convert.ToDouble(line_data[2]),
-                        FileDuration = "0",
-                    };
-                    medias.Add(data);
+                        MediaData data = new MediaData()
+                        {
+                            FileName = line_data[0],
+                            FileArtist = line_data[1],
+                            FileType = line_data[4],
+                            FileSize = (long)Convert.ToDouble(line_data[2]),
+                            FileDuration = "0",
+                            FilePath = line_data[3],
+                        };
+
+                        medias.Add(data);
+                    } catch (Exception e) 
+                    {
+                        Debug.WriteLine(e);
+                    }
                 }
             }
 
