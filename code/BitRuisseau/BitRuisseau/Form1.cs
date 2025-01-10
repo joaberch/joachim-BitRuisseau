@@ -8,6 +8,7 @@ namespace BitRuisseau
     public partial class Form1 : Form
     {
         MyCatalog MyMusic  = new MyCatalog(); //TODO - if a music is added in the local library we need to reload the app for it to be displayed
+        DataGridView dataGridView = MyCatalog.dataGridView;
 
         public Form1()
         {
@@ -47,14 +48,29 @@ namespace BitRuisseau
                 AutoSize = true,
                 Location = new Point(20, 100)
             };
+            dataGridView = new DataGridView()
+            {
+                ColumnCount = MQTT.GetPotentialMusicNbr(),
+                Location = new Point(120, 80),
+                Width = 600,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+            };
+            dataGridView.Columns.Add("Nom", "Nom");
+            dataGridView.Columns.Add("Artiste", "Artiste");
+            dataGridView.Columns.Add("Type", "Type");
+            dataGridView.Columns.Add("Taille", "Taille");
+            dataGridView.Columns.Add("Durée", "Durée");
 
             myCatalog.Click += new EventHandler(MyCatalogMenu);
             SearchMusic.Click += new EventHandler(SearchMenu);
             search.Click += new EventHandler(SearchCatalog);
 
+            RefreshPotentialMusic(dataGridView);
+
             this.Controls.Add(myCatalog);
             this.Controls.Add(SearchMusic);
             this.Controls.Add(search);
+            this.Controls.Add(dataGridView);
         }
 
         /// <summary>
@@ -109,6 +125,14 @@ namespace BitRuisseau
             this.Controls.Add(listBox);
             this.Controls.Add(addMusicButton);
             this.Controls.Add(networkSelectButton);
+        }
+
+        /// <summary>
+        /// Refresh music list
+        /// </summary>
+        public void RefreshPotentialMusic(DataGridView dataGridView)
+        {
+            MQTT.GetPotentialCatalog(dataGridView);
         }
 
         /// <summary>
@@ -179,9 +203,9 @@ namespace BitRuisseau
 
         private async void SearchCatalog(object sender, EventArgs e)
         {
-            //services.MQTT.GetAndRespondToCatalogAsking();
-            //TODO send a serialized ask catalog
             services.MQTT.AskCatalog();
+            Thread.Sleep(1000); //Get the answer before actualising
+            RefreshPotentialMusic(dataGridView);
         }
     }
 }

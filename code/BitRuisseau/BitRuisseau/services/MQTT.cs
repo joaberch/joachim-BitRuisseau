@@ -91,7 +91,6 @@ namespace BitRuisseau.services
 				//in CreateConnection noLocal is disabled (version error) so check sender id, if contains "Joachim" we consider it's ourself so we don't respond to ourself
 				//if (jsonReceivedMessage.Contains("Joachim")) { Debug.WriteLine("It's my own message, stop processing"); return; }
 
-				MessageBox.Show(jsonReceivedMessage);
 				Debug.WriteLine($"Message received : {jsonReceivedMessage}");
 
 				//Deserialize the basic message to get his type
@@ -163,10 +162,21 @@ namespace BitRuisseau.services
                 string json = deserializedMessage.EnvelopeJson;
                 EnvelopeSendCatalog envelopeCatalog = JsonSerializer.Deserialize<EnvelopeSendCatalog>(json);
                 envelopeCatalog.Content.ForEach(myCatalog.AddPotentialMusic);
+                myCatalog.GetPotentialMusic(MyCatalog.dataGridView);
             } catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
+        }
+
+        public static int GetPotentialMusicNbr()
+        {
+            return myCatalog.GetNbrPotentialMusic();
+        }
+
+        public static DataGridView GetPotentialCatalog(DataGridView dataGridView)
+        {
+            return myCatalog.GetPotentialMusic(dataGridView);
         }
 
         /// <summary>

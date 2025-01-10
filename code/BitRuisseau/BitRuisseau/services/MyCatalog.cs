@@ -20,6 +20,19 @@ namespace BitRuisseau.services
         List<MediaData> potentialMusicFiles = new List<MediaData>();
         string path = @"../../../../musicList.csv";
 
+        public static DataGridView dataGridView = new DataGridView();
+
+        public int GetNbrPotentialMusic()
+        {
+            return potentialMusicFiles.Count();
+        }
+
+        public DataGridView GetPotentialMusic(DataGridView dataGridView)
+        {
+            potentialMusicFiles.ForEach(music => dataGridView.Rows.Add(music.FileName, music.FileArtist, music.FileType, music.FileSize, music.FileDuration));
+            return dataGridView;
+        }
+
         public void AddMusic(MediaData music)
         {
             myMusicFiles.Add(music);
