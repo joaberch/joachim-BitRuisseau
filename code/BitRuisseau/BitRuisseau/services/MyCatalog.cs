@@ -28,6 +28,7 @@ namespace BitRuisseau.services
             return wantedFiles.Where(music => music.FileName == mediaData.FileName).Any();
         }
 
+
 		public MediaData GetMusic(string musicName)
         {
             return myMusicFiles.Where(music => music.FileName == musicName).FirstOrDefault();
@@ -57,7 +58,10 @@ namespace BitRuisseau.services
         {
             wantedFiles.Add(music);
         }
-
+        public void RemoveWantedMusic(MediaData mediaData)
+        {
+            wantedFiles.Remove(wantedFiles.Where(music => music.FileName == mediaData.FileName).FirstOrDefault());
+        }
 
 		private void DisplayMusicAdded(MediaData musicFile)
         {

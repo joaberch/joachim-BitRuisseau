@@ -178,6 +178,10 @@ namespace BitRuisseau.services
             string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)}\\{metaData.FileName.Trim()}.{metaData.FileType.Trim()}";
 			File.WriteAllBytes(path, file);
             MessageBox.Show($"La musique {metaData.FileName} a été téléchargé avec succès à l'emplacement : {path}");
+
+            myCatalog.RemoveWantedMusic(metaData);
+            myCatalog.AddMusic(metaData);
+            myCatalog.SaveMusicDataInTxt(metaData);
 		}
 
         /// <summary>
@@ -302,6 +306,7 @@ namespace BitRuisseau.services
         /// <param name="dataGridView"></param>
         public static void AskMusic(string musicName)
         {
+            if (!(myCatalog.GetMusic(musicName) == null)) { MessageBox.Show("Vous avez déjà cette musique");  return; }
             AskFile askFile = new AskFile()
             {
                 FileName = musicName,
