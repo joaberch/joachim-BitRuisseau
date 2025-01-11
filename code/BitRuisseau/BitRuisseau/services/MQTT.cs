@@ -145,6 +145,7 @@ namespace BitRuisseau.services
             {
                 AskFile askFile = JsonSerializer.Deserialize<AskFile>(deserializedMessage.EnvelopeJson);
                 MediaData music = myCatalog.GetMusic(askFile.FileName);
+                if(music == null) { return; }
                 if (music.FileName.Length > 0) //Check name of the music to know if empty
                 {
                     EnvelopeSendFile envelopeSendFile = new EnvelopeSendFile();
