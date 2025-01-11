@@ -3,15 +3,13 @@ using BitRuisseau.Models;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
-using MQTTnet.Server;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 
 namespace BitRuisseau.services
 {
-    public class MQTT
+	public class MQTT
     {
         static IMqttClient mqttClient; // Client MQTT global
         static MqttClientOptions mqttOptions; // Global connection options
@@ -144,8 +142,20 @@ namespace BitRuisseau.services
             try
             {
                 AskFile askFile = JsonSerializer.Deserialize<AskFile>(deserializedMessage.EnvelopeJson);
-                Debug.WriteLine(askFile);
-                //TODO if mycatalog has that name we send
+                MediaData music = myCatalog.GetMusic(askFile.FileName);
+                if (music.FileName.Length > 0) //Check name of the music to know if empty
+                {
+                    EnvelopeSendFile envelopeSendFile = new EnvelopeSendFile();
+                    envelopeSendFile.Content = Convert.ToBase64String(File.ReadAllBytes(music.FilePath.Trim())); //Trim because the first character is a space in the csv
+                    envelopeSendFile.FileInfo = music;
+
+					GenericEnvelope envelope = new GenericEnvelope();
+					envelope.MessageType = MessageType.SEND_FILE;
+					envelope.SenderId = confs.MQTT.ClientId;
+					envelope.EnvelopeJson = envelopeSendFile.ToJson();
+
+					SendData(envelope.ToJson());
+				}
             }
             catch (Exception ex)
             {

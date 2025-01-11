@@ -22,7 +22,12 @@ namespace BitRuisseau.services
 
         public static DataGridView dataGridView = new DataGridView();
 
-        public DataGridView GetPotentialMusic(DataGridView dataGridView)
+		public MediaData GetMusic(string musicName)
+        {
+            return myMusicFiles.Where(music => music.FileName == musicName).FirstOrDefault();
+        }
+
+		public DataGridView GetPotentialMusic(DataGridView dataGridView)
         {
              potentialMusicFiles
                 .Where(music => music.FileSize > 0)
