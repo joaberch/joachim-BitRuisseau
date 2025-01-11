@@ -49,6 +49,11 @@ namespace BitRuisseau.services
             return dataGridView;
         }
 
+        public void ClearPotentialMusic()
+        {
+            potentialMusicFiles.Clear();
+        }
+
         public void AddMusic(MediaData music)
         {
             myMusicFiles.Add(music);

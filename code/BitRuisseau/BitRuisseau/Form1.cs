@@ -162,6 +162,7 @@ namespace BitRuisseau
         {
             dataGridView.Rows.Clear();
             MQTT.GetPotentialCatalog(dataGridView);
+            dataGridView.Update();
         }
 
         /// <summary>
@@ -232,7 +233,8 @@ namespace BitRuisseau
 
         private async void SearchCatalog(object sender, EventArgs e)
         {
-            services.MQTT.AskCatalog();
+            MQTT.myCatalog.ClearPotentialMusic();
+            MQTT.AskCatalog();
             Thread.Sleep(1000); //Get the answer before actualising
             RefreshPotentialMusic(dataGridView);
         }
