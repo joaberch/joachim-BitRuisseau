@@ -56,6 +56,7 @@ namespace BitRuisseau.services
 
         public void AddWantedMusic(MediaData music)
         {
+            if (music == null) { return; }
             wantedFiles.Add(music);
         }
         public void RemoveWantedMusic(MediaData mediaData)
