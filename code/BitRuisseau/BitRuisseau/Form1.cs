@@ -160,6 +160,7 @@ namespace BitRuisseau
         /// </summary>
         public void RefreshPotentialMusic(DataGridView dataGridView)
         {
+            dataGridView.Rows.Clear();
             MQTT.GetPotentialCatalog(dataGridView);
         }
 
