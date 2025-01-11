@@ -195,7 +195,7 @@ namespace BitRuisseau.services
                 string json = deserializedMessage.EnvelopeJson;
                 EnvelopeSendCatalog envelopeCatalog = JsonSerializer.Deserialize<EnvelopeSendCatalog>(json);
                 envelopeCatalog.Content.ForEach(myCatalog.AddPotentialMusic);
-                myCatalog.GetPotentialMusic(MyCatalog.dataGridView);
+                myCatalog.UpdatePotentialMusic(MyCatalog.dataGridView);
             } catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
@@ -204,7 +204,7 @@ namespace BitRuisseau.services
 
         public static DataGridView GetPotentialCatalog(DataGridView dataGridView)
         {
-            return myCatalog.GetPotentialMusic(dataGridView);
+            return myCatalog.UpdatePotentialMusic(dataGridView);
         }
 
         /// <summary>
@@ -312,7 +312,7 @@ namespace BitRuisseau.services
             {
                 FileName = musicName,
             };
-            myCatalog.AddWantedMusic(myCatalog.GetMusic(musicName));
+            myCatalog.AddWantedMusic(myCatalog.GetPotentialMusic(musicName));
             GenericEnvelope genericEnvelope = new GenericEnvelope
             {
                 MessageType = MessageType.ASK_FILE,

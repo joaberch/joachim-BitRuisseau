@@ -34,7 +34,12 @@ namespace BitRuisseau.services
             return myMusicFiles.Where(music => music.FileName == musicName).FirstOrDefault();
         }
 
-		public DataGridView GetPotentialMusic(DataGridView dataGridView)
+        public MediaData GetPotentialMusic(string musicName)
+        {
+            return potentialMusicFiles.Where(music => music.FileName == musicName).FirstOrDefault();
+        }
+
+		public DataGridView UpdatePotentialMusic(DataGridView dataGridView)
         {
              potentialMusicFiles
                 .Where(music => music.FileSize > 0)
