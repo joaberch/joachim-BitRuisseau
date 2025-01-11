@@ -81,7 +81,14 @@ namespace BitRuisseau.services
         {
             List<MediaData> medias = new List<MediaData>();
             string path = @"../../../../musicList.csv";
-            using (StreamReader sr = new StreamReader(path))
+
+			if (!Path.Exists(path))
+			{
+                //To close the file to process it after
+                using (FileStream fs = File.Create(path)) ;
+			}
+
+			using (StreamReader sr = new StreamReader(path))
             {
                 string lines;
                 while ((lines = sr.ReadLine()) != null)
