@@ -1,11 +1,9 @@
 ﻿using BitRuisseau.confs;
 using BitRuisseau.Models;
-using Microsoft.VisualBasic.ApplicationServices;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Text.Json;
 
@@ -94,7 +92,7 @@ namespace BitRuisseau.services
 				Debug.WriteLine($"Message received : {jsonReceivedMessage}");
 
 				//Deserialize the basic message to get his type
-				GenericEnvelope? deserializedMessage = DeserializeGenericMessage(jsonReceivedMessage);
+				GenericEnvelope? deserializedMessage = new GenericEnvelope().Deserialize(jsonReceivedMessage);
                 Debug.WriteLine($"Message successfully deserialized : messageType={deserializedMessage.MessageType} - SenderId={deserializedMessage.SenderId} - EnvelopeJson={deserializedMessage.EnvelopeJson}");
 
                 ProcessMessage(deserializedMessage);
@@ -143,7 +141,7 @@ namespace BitRuisseau.services
         {
             try
             {
-                AskFile askFile = JsonSerializer.Deserialize<AskFile>(deserializedMessage.EnvelopeJson);
+                AskFile askFile = new AskFile().Deserialize(deserializedMessage.EnvelopeJson);
                 MediaData music = myCatalog.GetMusic(askFile.FileName);
                 if(music == null) { return; }
                 if (music.FileName.Length > 0) //Check name of the music to know if empty
@@ -171,7 +169,7 @@ namespace BitRuisseau.services
         /// </summary>
         private static void DownloadFile(GenericEnvelope? deserializedMessage)
         {
-            EnvelopeSendFile envelopeSendFile = JsonSerializer.Deserialize<EnvelopeSendFile>(deserializedMessage.EnvelopeJson);
+            EnvelopeSendFile envelopeSendFile = new EnvelopeSendFile().Deserialize(deserializedMessage.EnvelopeJson);
             if (!myCatalog.WantThisFile(envelopeSendFile.FileInfo)) { return; }
 
 			MediaData metaData = envelopeSendFile.FileInfo;
@@ -192,8 +190,7 @@ namespace BitRuisseau.services
         {
             try
             {
-                string json = deserializedMessage.EnvelopeJson;
-                EnvelopeSendCatalog envelopeCatalog = JsonSerializer.Deserialize<EnvelopeSendCatalog>(json);
+                EnvelopeSendCatalog envelopeCatalog = new EnvelopeSendCatalog().Deserialize(deserializedMessage.EnvelopeJson);
                 envelopeCatalog.Content.ForEach(myCatalog.AddPotentialMusic);
                 myCatalog.UpdatePotentialMusic(MyCatalog.dataGridView);
             } catch (Exception ex)
@@ -262,16 +259,6 @@ namespace BitRuisseau.services
             genericEnvelope.EnvelopeJson = askCatalog.ToJson();
 
             SendData(JsonSerializer.Serialize(genericEnvelope));
-        }
-
-        /// <summary>
-        /// Deserialize Generic Envelope
-        /// </summary>
-        /// <param name="serializedMessage"></param>
-        /// <returns></returns>
-        private static GenericEnvelope? DeserializeGenericMessage(string serializedMessage)
-        {
-            return JsonSerializer.Deserialize<GenericEnvelope>(serializedMessage);
         }
 
         /// <summary>
