@@ -48,34 +48,8 @@ namespace BitRuisseau
                 AutoSize = true,
                 Location = new Point(20, 100)
             };
-            dataGridView = new DataGridView()
-            {
-                ColumnCount = 0,
-				AllowUserToAddRows = false,
-                Location = new Point(150, 80),
-                Width = 900,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-            };
-            dataGridView.Columns.Add("Nom", "Nom");
-            dataGridView.Columns.Add("Artiste", "Artiste");
-            dataGridView.Columns.Add("Type", "Type");
-            dataGridView.Columns.Add("Taille", "Taille");
-            dataGridView.Columns.Add("Durée", "Durée");
-            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn
-            {
-                Name = "Télécharger",
-                HeaderText = "Télécharger",
-                Text = "Télécharger",
-                UseColumnTextForButtonValue = true,
-            };
-            dataGridView.Columns.Add(buttonColumn);
-            dataGridView.CellClick += (sender, e) =>
-            {
-                if (e.ColumnIndex == dataGridView.Columns["Télécharger"].Index && e.RowIndex >= 0)
-                {
-                    MQTT.AskMusic(dataGridView.Rows[e.RowIndex].Cells["Nom"].Value.ToString());
-                }
-            };
+
+            dataGridView = InitDataGridView();
 
             myCatalog.Click += new EventHandler(MyCatalogMenu);
             SearchMusic.Click += new EventHandler(SearchMenu);
@@ -89,10 +63,48 @@ namespace BitRuisseau
             this.Controls.Add(dataGridView);
         }
 
-        /// <summary>
-        /// Element of the first menu
-        /// </summary>
-        public void InitializeCatalogMenu()
+        private DataGridView InitDataGridView()
+        {
+            DataGridView dataGridView = new DataGridView
+            {
+				ColumnCount = 0,
+				AllowUserToAddRows = false,
+				Location = new Point(150, 80),
+				Width = 900,
+				AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+			};
+
+			dataGridView.Columns.Add("Nom", "Nom");
+			dataGridView.Columns.Add("Artiste", "Artiste");
+			dataGridView.Columns.Add("Type", "Type");
+			dataGridView.Columns.Add("Taille", "Taille");
+			dataGridView.Columns.Add("Durée", "Durée");
+            dataGridView.Columns.Add(new DataGridViewButtonColumn
+            {
+				Name = "Télécharger",
+				HeaderText = "Télécharger",
+				Text = "Télécharger",
+				UseColumnTextForButtonValue = true,
+			});
+
+            dataGridView.CellClick += CellClicked;
+
+			return dataGridView;
+        }
+
+        private void CellClicked(object sender, DataGridViewCellEventArgs e)
+		{
+			if (sender is DataGridView dataGridView && e.ColumnIndex == dataGridView.Columns["Télécharger"].Index && e.RowIndex >= 0)
+			{
+                string name = dataGridView.Rows[e.RowIndex].Cells["Nom"].Value.ToString(); //Get the name of the music
+				MQTT.AskMusic(name);
+			}
+		}
+
+		/// <summary>
+		/// Element of the first menu
+		/// </summary>
+		public void InitializeCatalogMenu()
         {
             this.Text = "BitRuisseau";
             ListBox listBox = new ListBox()
