@@ -18,9 +18,15 @@ namespace BitRuisseau.services
 
         List<MediaData> myMusicFiles = new List<MediaData>();
         List<MediaData> potentialMusicFiles = new List<MediaData>();
+        List<MediaData> wantedFiles = new List<MediaData>();
         string path = @"../../../../musicList.csv";
 
         public static DataGridView dataGridView = new DataGridView();
+
+        public bool WantThisFile(MediaData mediaData)
+        {
+            return wantedFiles.Where(music => music.FileName == mediaData.FileName).Any();
+        }
 
 		public MediaData GetMusic(string musicName)
         {
@@ -47,7 +53,13 @@ namespace BitRuisseau.services
             potentialMusicFiles.Add(music);
         }
 
-        private void DisplayMusicAdded(MediaData musicFile)
+        public void AddWantedMusic(MediaData music)
+        {
+            wantedFiles.Add(music);
+        }
+
+
+		private void DisplayMusicAdded(MediaData musicFile)
         {
             MessageBox.Show($"Musique ajoutée :\n" +
                 $"Nom: {musicFile.FileName}\n" +

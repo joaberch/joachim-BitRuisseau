@@ -1,9 +1,11 @@
 ﻿using BitRuisseau.confs;
 using BitRuisseau.Models;
+using Microsoft.VisualBasic.ApplicationServices;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 
@@ -122,7 +124,7 @@ namespace BitRuisseau.services
                 case MessageType.SEND_FILE:
                     {
                         Debug.WriteLine("SEND_FILE");
-                        DownloadFile();
+                        DownloadFile(deserializedMessage);
                         break;
                     }
                 case MessageType.ASK_FILE:
@@ -166,10 +168,17 @@ namespace BitRuisseau.services
         /// <summary>
         /// Get File
         /// </summary>
-        private static void DownloadFile()
+        private static void DownloadFile(GenericEnvelope? deserializedMessage)
         {
+            EnvelopeSendFile envelopeSendFile = JsonSerializer.Deserialize<EnvelopeSendFile>(deserializedMessage.EnvelopeJson);
+            if (!myCatalog.WantThisFile(envelopeSendFile.FileInfo)) { return; }
 
-        }
+			MediaData metaData = envelopeSendFile.FileInfo;
+			byte[] file = Convert.FromBase64String(envelopeSendFile.Content);
+            string path = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)}\\{metaData.FileName.Trim()}.{metaData.FileType.Trim()}";
+			File.WriteAllBytes(path, file);
+            MessageBox.Show($"La musique {metaData.FileName} a été téléchargé avec succès à l'emplacement : {path}");
+		}
 
         /// <summary>
         /// Get Catalog
@@ -297,6 +306,7 @@ namespace BitRuisseau.services
             {
                 FileName = musicName,
             };
+            myCatalog.AddWantedMusic(myCatalog.GetMusic(musicName));
             GenericEnvelope genericEnvelope = new GenericEnvelope
             {
                 MessageType = MessageType.ASK_FILE,
