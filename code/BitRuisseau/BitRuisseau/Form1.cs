@@ -50,9 +50,10 @@ namespace BitRuisseau
             };
             dataGridView = new DataGridView()
             {
-                ColumnCount = MQTT.GetPotentialMusicNbr(),
-                Location = new Point(120, 80),
-                Width = 600,
+                ColumnCount = 0,
+				AllowUserToAddRows = false,
+                Location = new Point(150, 80),
+                Width = 900,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
             };
             dataGridView.Columns.Add("Nom", "Nom");

@@ -178,11 +178,6 @@ namespace BitRuisseau.services
             }
         }
 
-        public static int GetPotentialMusicNbr()
-        {
-            return myCatalog.GetNbrPotentialMusic();
-        }
-
         public static DataGridView GetPotentialCatalog(DataGridView dataGridView)
         {
             return myCatalog.GetPotentialMusic(dataGridView);
