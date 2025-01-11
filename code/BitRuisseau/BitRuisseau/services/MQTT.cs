@@ -89,7 +89,7 @@ namespace BitRuisseau.services
 
 				//TODO
 				//in CreateConnection noLocal is disabled (version error) so check sender id, if contains "Joachim" we consider it's ourself so we don't respond to ourself
-				//if (jsonReceivedMessage.Contains("Joachim")) { Debug.WriteLine("It's my own message, stop processing"); return; }
+				if (jsonReceivedMessage.Contains(confs.MQTT.ClientId)) { Debug.WriteLine("It's my own message, stop processing"); return; }
 
 				Debug.WriteLine($"Message received : {jsonReceivedMessage}");
 
